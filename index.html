@@ -1,6 +1,338 @@
-<h1>Playmobil aan Zee Competition</h1>
-<p>Coming soon...</p>
-<p>test clone repo</p>
+<!doctype html>
+<html lang="nl">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#0aa5ff" />
+    <title>Playmobil aan Zee | Wedstrijd</title>
+    <link rel="stylesheet" href="assets/styles.css" />
+  </head>
+  <body>
+    <div id="intro" class="intro" aria-hidden="true">
+      <div class="intro__card">
+        <div class="logo" role="img" aria-label="Smiley logo">
+          <svg
+            class="logo__svg"
+            width="160"
+            height="160"
+            viewBox="0 0 160 160"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <defs>
+              <linearGradient id="g" x1="20" y1="20" x2="140" y2="140">
+                <stop stop-color="#FFE16A" />
+                <stop offset="1" stop-color="#FFB703" />
+              </linearGradient>
+            </defs>
+            <circle cx="80" cy="80" r="64" fill="url(#g)" />
+            <circle cx="55" cy="66" r="8" fill="#1b1b1b" />
+            <g class="logo__wink">
+              <line
+                x1="94"
+                y1="66"
+                x2="116"
+                y2="66"
+                stroke="#1b1b1b"
+                stroke-width="6"
+                stroke-linecap="round"
+              />
+              <circle class="logo__openeye" cx="105" cy="66" r="8" fill="#1b1b1b" />
+            </g>
+            <path
+              d="M50 95 C60 115, 100 115, 110 95"
+              stroke="#1b1b1b"
+              stroke-width="8"
+              stroke-linecap="round"
+              fill="none"
+            />
+            <circle cx="35" cy="86" r="10" fill="#ff5a7a" opacity="0.35" />
+            <circle cx="125" cy="86" r="10" fill="#ff5a7a" opacity="0.35" />
+          </svg>
+        </div>
+        <div class="intro__title">Playmobil aan Zee</div>
+        <div class="intro__subtitle">Wedstrijd</div>
+        <div class="intro__hint">Kijk goed… er spoelt zo iets aan.</div>
+      </div>
 
-<p>tespush!</p>
+      <svg
+        class="wash"
+        viewBox="0 0 1200 200"
+        preserveAspectRatio="none"
+        aria-hidden="true"
+      >
+        <path
+          d="M0,120 C120,80 240,160 360,120 C480,80 600,160 720,120 C840,80 960,160 1080,120 C1140,100 1180,90 1200,96 L1200,200 L0,200 Z"
+          fill="#0aa5ff"
+          opacity="0.92"
+        />
+        <path
+          d="M0,130 C150,95 300,165 450,130 C600,95 750,165 900,130 C1050,95 1150,150 1200,128 L1200,200 L0,200 Z"
+          fill="#24c3ff"
+          opacity="0.7"
+        />
+      </svg>
+    </div>
 
+    <header class="topbar">
+      <div class="topbar__badge" aria-hidden="true">
+        <span class="badge__dot"></span>
+        <span class="badge__dot"></span>
+        <span class="badge__dot"></span>
+      </div>
+      <div class="topbar__title">
+        <span class="topbar__titleMain">Playmobil aan Zee</span>
+        <span class="topbar__titleSub">Wedstrijd</span>
+      </div>
+      <div class="topbar__sun" aria-hidden="true"></div>
+    </header>
+
+    <main class="page">
+      <section class="hero">
+        <h1 class="hero__h1">Welkom!</h1>
+        <p class="hero__p">
+          Tel alle verborgen <strong>vlaggetjes</strong> in elke diorama op de
+          beurs, tel ze samen (werk gerust samen!), en vul het totaal hieronder
+          in.
+        </p>
+        <div class="hero__chips" aria-label="Snelle tips">
+          <div class="chip">1 deelname per e-mailadres</div>
+          <div class="chip">Alleen mobiel</div>
+          <div class="chip">Succes en veel plezier!</div>
+        </div>
+      </section>
+
+      <section class="card card--diorama" aria-label="Mini diorama">
+        <div class="card__titleRow">
+          <h2 class="card__title">Mini diorama</h2>
+          <div class="card__tag">1 vlaggetje te vinden</div>
+        </div>
+        <p class="card__p">
+          Op deze pagina zit ook een klein vlaggetje verstopt. Tik erop als je
+          het gevonden hebt.
+        </p>
+        <div class="diorama" role="img" aria-label="Zee, zand en een kasteel">
+          <div class="diorama__sea"></div>
+          <div class="diorama__sand"></div>
+          <div class="diorama__castle">
+            <div class="castle__tower"></div>
+            <div class="castle__tower castle__tower--right"></div>
+            <div class="castle__gate"></div>
+          </div>
+          <button
+            id="hiddenFlag"
+            class="hiddenFlag"
+            type="button"
+            aria-label="Verborgen vlaggetje"
+          >
+            <span class="flag__pole" aria-hidden="true"></span>
+            <span class="flag__cloth" aria-hidden="true"></span>
+          </button>
+        </div>
+        <div id="flagToast" class="toast" role="status" aria-live="polite"></div>
+      </section>
+
+      <section class="card" aria-label="Wedstrijdformulier">
+        <h2 class="card__title">Doe mee</h2>
+
+        <form id="entryForm" class="form" novalidate>
+          <label class="field">
+            <span class="field__label">E-mailadres</span>
+            <input
+              id="email"
+              name="email"
+              class="field__input"
+              type="email"
+              inputmode="email"
+              autocomplete="email"
+              placeholder="jij@voorbeeld.be"
+              required
+            />
+            <span class="field__hint"
+              >We gebruiken dit om dubbele deelnames te voorkomen.</span
+            >
+          </label>
+
+          <div id="adminGate" class="adminGate" hidden>
+            <div class="adminGate__note">
+              Admin modus. Vul het wachtwoord in.
+            </div>
+            <label class="field">
+              <span class="field__label">Wachtwoord</span>
+              <input
+                id="adminPassword"
+                class="field__input"
+                type="password"
+                autocomplete="current-password"
+                placeholder="admin"
+              />
+            </label>
+            <button id="adminLogin" class="btn btn--primary" type="button">
+              Open admin paneel
+            </button>
+            <div
+              id="adminGateMsg"
+              class="formMsg"
+              role="status"
+              aria-live="polite"
+            ></div>
+          </div>
+
+          <div id="entryFields" class="entryFields">
+            <label class="field">
+              <span class="field__label">Gemeente/stad (optioneel)</span>
+              <input
+                id="city"
+                name="city"
+                class="field__input"
+                type="text"
+                autocomplete="address-level2"
+                placeholder="bv. Oostende"
+                maxlength="120"
+              />
+              <span class="field__hint">Alleen voor statistieken.</span>
+            </label>
+
+            <label class="check">
+              <input id="newsletter" type="checkbox" />
+              <span
+                >Ja, je mag mij mailen voor de nieuwsbrief (optioneel)</span
+              >
+            </label>
+
+            <div id="step2" class="step2" aria-hidden="true">
+              <label class="field">
+                <span class="field__label"
+                  >Totaal aantal vlaggetjes (alle diorama's samen)</span
+                >
+                <input
+                  id="answer"
+                  name="answer"
+                  class="field__input"
+                  type="number"
+                  inputmode="numeric"
+                  min="0"
+                  max="9999"
+                  step="1"
+                  placeholder="?"
+                  disabled
+                  required
+                />
+                <span class="field__hint"
+                  >Tip: tel rustig. Ouders mogen helpen.</span
+                >
+              </label>
+
+              <button id="submitBtn" class="btn btn--primary" type="submit">
+                Versturen
+              </button>
+              <div id="formMsg" class="formMsg" role="status" aria-live="polite"></div>
+            </div>
+          </div>
+        </form>
+      </section>
+
+      <section id="adminPanel" class="card admin" hidden aria-label="Admin paneel">
+        <div class="card__titleRow">
+          <h2 class="card__title">Admin</h2>
+          <button id="adminRefresh" class="btn btn--ghost" type="button">
+            Ververs
+          </button>
+        </div>
+
+        <div class="stats">
+          <div class="stat">
+            <div class="stat__k">Deelnemers</div>
+            <div id="statTotal" class="stat__v">-</div>
+          </div>
+          <div class="stat">
+            <div class="stat__k">Juist</div>
+            <div id="statCorrect" class="stat__v">-</div>
+          </div>
+          <div class="stat">
+            <div class="stat__k">Fout</div>
+            <div id="statWrong" class="stat__v">-</div>
+          </div>
+          <div class="stat">
+            <div class="stat__k">Goud</div>
+            <div id="statGold" class="stat__v">-</div>
+          </div>
+        </div>
+
+        <div class="goldCtrl">
+          <div class="goldCtrl__label">Volgende gouden prijs over</div>
+          <div class="goldCtrl__row">
+            <button id="goldMinus" class="btn btn--ghost" type="button">-</button>
+            <div class="goldCtrl__num">
+              <span id="goldRemaining">-</span> deelnemers
+            </div>
+            <button id="goldPlus" class="btn btn--ghost" type="button">+</button>
+          </div>
+          <button id="goldApply" class="btn btn--primary" type="button">
+            Toepassen
+          </button>
+          <div id="adminMsg" class="formMsg" role="status" aria-live="polite"></div>
+        </div>
+
+        <div class="winners">
+          <h3 class="winners__h">Gouden winnaars</h3>
+          <div id="winnersList" class="winners__list"></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <details class="legal" open>
+        <summary>Privacy & voorwaarden</summary>
+        <div class="legal__body">
+          <p>
+            We verzamelen je e-mailadres om deelname te registreren en dubbele
+            deelnames te vermijden. Gemeente/stad is optioneel en enkel voor
+            statistieken.
+          </p>
+          <p>
+            Nieuwsbrief: alleen als je het vakje aanvinkt. Je kan je altijd
+            uitschrijven.
+          </p>
+          <p class="legal__small">
+            Organisator/Contact: vul dit aan met je echte gegevens voor je live
+            gaat. Bewaartermijn, GDPR contact, enz.
+          </p>
+        </div>
+      </details>
+      <div class="footer__note">© Playmobil aan Zee</div>
+    </footer>
+
+    <div id="overlay" class="overlay" hidden aria-live="polite">
+      <div id="overlayCard" class="overlay__card" role="dialog" aria-modal="true">
+        <div id="overlayTitle" class="overlay__title"></div>
+        <div id="overlayText" class="overlay__text"></div>
+        <button id="overlayClose" class="btn btn--primary" type="button">
+          Sluiten
+        </button>
+      </div>
+      <canvas id="confetti" class="confetti" aria-hidden="true"></canvas>
+    </div>
+
+    <div id="goldScreen" class="goldScreen" hidden>
+      <div class="goldScreen__spotlight" aria-hidden="true"></div>
+      <div class="goldScreen__wrap">
+        <div class="trophy" role="img" aria-label="Trophy">
+          <div class="trophy__cup"></div>
+          <div class="trophy__stem"></div>
+          <div class="trophy__base"></div>
+        </div>
+        <div class="goldScreen__title" id="goldTitle"></div>
+        <div class="goldScreen__text">
+          Je scherm blijft zo staan. Laat dit zien aan onze crew.
+        </div>
+      </div>
+      <canvas id="confettiGold" class="confetti confetti--gold" aria-hidden="true"></canvas>
+    </div>
+
+    <script src="assets/app.js" defer></script>
+  </body>
+</html>
