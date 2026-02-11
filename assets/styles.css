@@ -728,6 +728,11 @@ body {
   line-height: 1.45;
 }
 
+.overlay__card--error {
+  border: 2px solid rgba(255, 59, 101, 0.4);
+  background: rgba(255, 242, 245, 0.98);
+}
+
 .confetti {
   position: absolute;
   inset: 0;

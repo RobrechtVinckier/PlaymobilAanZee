@@ -55,7 +55,7 @@
         </div>
         <div class="intro__title">Playmobil aan Zee</div>
         <div class="intro__subtitle">Wedstrijd</div>
-        <div class="intro__hint">Kijk goed… er spoelt zo iets aan.</div>
+        <div class="intro__hint">Kijk goed... er spoelt zo iets aan.</div>
       </div>
 
       <svg
@@ -99,36 +99,6 @@
         </p>
       </section>
 
-      <section class="card card--diorama" aria-label="Mini diorama">
-        <div class="card__titleRow">
-          <h2 class="card__title">Mini diorama</h2>
-          <div class="card__tag">1 vlaggetje te vinden</div>
-        </div>
-        <p class="card__p">
-          Op deze pagina zit ook een klein vlaggetje verstopt. Tik erop als je
-          het gevonden hebt.
-        </p>
-        <div class="diorama" role="img" aria-label="Zee, zand en een kasteel">
-          <div class="diorama__sea"></div>
-          <div class="diorama__sand"></div>
-          <div class="diorama__castle">
-            <div class="castle__tower"></div>
-            <div class="castle__tower castle__tower--right"></div>
-            <div class="castle__gate"></div>
-          </div>
-          <button
-            id="hiddenFlag"
-            class="hiddenFlag"
-            type="button"
-            aria-label="Verborgen vlaggetje"
-          >
-            <span class="flag__pole" aria-hidden="true"></span>
-            <span class="flag__cloth" aria-hidden="true"></span>
-          </button>
-        </div>
-        <div id="flagToast" class="toast" role="status" aria-live="polite"></div>
-      </section>
-
       <section class="card" aria-label="Wedstrijdformulier">
         <h2 class="card__title">Doe mee</h2>
 
@@ -151,13 +121,6 @@
             <input id="newsletter" type="checkbox" />
             <span>Ja, je mag mij mailen voor de nieuwsbrief (optioneel)</span>
           </label>
-
-          <div class="continueRow">
-            <button id="continueBtn" class="btn btn--ghost" type="button">
-              Verder
-            </button>
-            <div id="continueMsg" class="formMsg" role="status" aria-live="polite"></div>
-          </div>
 
           <div id="adminGate" class="adminGate" hidden>
             <div class="adminGate__note">
@@ -198,6 +161,13 @@
               />
               <span class="field__hint">Alleen voor statistieken.</span>
             </label>
+
+            <div class="continueRow">
+              <button id="continueBtn" class="btn btn--ghost" type="button">
+                Verder
+              </button>
+              <div id="continueMsg" class="formMsg" role="status" aria-live="polite"></div>
+            </div>
 
             <div id="step2" class="step2" aria-hidden="true">
               <label class="field">
@@ -332,3 +302,4 @@
     <script src="assets/app.js" defer></script>
   </body>
 </html>
+

@@ -12,7 +12,7 @@ function isLikelyEmail(s) {
   // HTML input[type=email] is the first line of defense; this is just UX.
   const v = String(s || "").trim();
   if (v.length < 6) return false;
-  return /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(v);
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
 }
 
 function prefersReducedMotion() {
@@ -150,8 +150,6 @@ function createConfetti(canvas, { loop = false } = {}) {
 
 document.addEventListener("DOMContentLoaded", () => {
   const intro = $("intro");
-  const hiddenFlag = $("hiddenFlag");
-  const flagToast = $("flagToast");
   const emailEl = $("email");
   const continueBtn = $("continueBtn");
   const continueMsg = $("continueMsg");
@@ -161,6 +159,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const formMsg = $("formMsg");
   const submitBtn = $("submitBtn");
   const overlay = $("overlay");
+  const overlayCard = $("overlayCard");
   const overlayClose = $("overlayClose");
   const overlayTitle = $("overlayTitle");
   const overlayText = $("overlayText");
@@ -191,14 +190,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let confettiRun = null;
   let confettiGoldRun = null;
-  let foundFlag = false;
   let adminPw = "";
   let remainingLocal = null;
   let entryUnlocked = false;
 
-  function showOverlay(title, text, { confettiMode = "none" } = {}) {
+  function showOverlay(title, text, { confettiMode = "none", tone = "normal" } = {}) {
     overlayTitle.textContent = title || "";
     overlayText.textContent = text || "";
+    if (overlayCard) {
+      overlayCard.classList.remove("overlay__card--error");
+      if (tone === "error") {
+        overlayCard.classList.add("overlay__card--error");
+      }
+    }
     show(overlay);
     if (!prefersReducedMotion() && confettiMode !== "none") {
       if (confettiRun) confettiRun.stop();
@@ -265,7 +269,6 @@ document.addEventListener("DOMContentLoaded", () => {
       show(adminGate);
       setMsg(adminGateMsg, "", "");
       hide(entryFields);
-      hide(continueBtn);
       setMsg(continueMsg, "", "");
       step2.classList.remove("step2--on");
       answerEl.disabled = true;
@@ -278,7 +281,6 @@ document.addEventListener("DOMContentLoaded", () => {
     hide(adminPanel);
     setMsg(adminGateMsg, "", "");
     show(entryFields);
-    show(continueBtn);
 
     const ok = isLikelyEmail(email);
     if (ok && entryUnlocked) {
@@ -359,19 +361,15 @@ document.addEventListener("DOMContentLoaded", () => {
     doIntro();
   }
 
-  // Hidden flag easter egg
-  if (hiddenFlag) {
-    hiddenFlag.addEventListener("click", () => {
-      if (foundFlag) return;
-      foundFlag = true;
-      hiddenFlag.classList.add("hiddenFlag--found");
-      if (flagToast) flagToast.textContent = "Je vond een vlaggetje! Goed speuren!";
-    });
+  const legalDetails = document.querySelector("details.legal");
+  if (legalDetails) {
+    legalDetails.open = false;
   }
 
   if (emailEl) {
     emailEl.addEventListener("input", () => {
       entryUnlocked = false;
+      setMsg(continueMsg, "", "");
       updateStep2();
     });
     updateStep2();
@@ -379,12 +377,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (continueBtn) {
     continueBtn.addEventListener("click", () => {
+      const email = String(emailEl.value || "").trim();
+      if (email.toLowerCase() === "admin") {
+        setMsg(continueMsg, "Gebruik admin login hierboven.", "err");
+        return;
+      }
       if (!emailEl.checkValidity()) {
+        setMsg(continueMsg, "Vul eerst een geldig e-mailadres in.", "err");
         emailEl.reportValidity();
         return;
       }
       entryUnlocked = true;
       updateStep2();
+      setMsg(continueMsg, "Top! Vul nu je totaal in.", "ok");
       if (!answerEl.disabled) {
         answerEl.focus();
       }
@@ -543,11 +548,11 @@ document.addEventListener("DOMContentLoaded", () => {
         setMsg(formMsg, "Ingediend. Succes!", "ok");
       } else {
         showOverlay(
-          "Dankjewel!",
-          "Je antwoord is binnen. Misschien nog eens tellen? (Je kan maar 1x deelnemen per e-mail.)",
-          { confettiMode: "none" }
+          ":( Sorry, dat is niet correct.",
+          "Jammer! Dit antwoord klopt niet. Bedankt voor je deelname.",
+          { confettiMode: "none", tone: "error" }
         );
-        setMsg(formMsg, "Ingediend.", "ok");
+        setMsg(formMsg, "Sorry, dat is niet correct.", "err");
       }
     });
   }
