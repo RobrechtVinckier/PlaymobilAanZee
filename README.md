@@ -13,11 +13,13 @@ Mobile-only wedstrijdsite (NL) + minimale PHP API voor opslag in MySQL (cPanel).
 Er zit een `docker-compose.yml` in de repo zodat je geen PHP/MySQL lokaal hoeft te installeren.
 
 1. Start:
-   - `docker compose up -d`
+   - `docker compose up -d --build`
 2. Open:
    - `http://localhost:8080`
 3. Reset DB (alles wissen):
    - `docker compose down -v`
+
+Bij schema-updates (zoals extra kolommen) moet je lokaal meestal ook resetten met `docker compose down -v` en daarna opnieuw `docker compose up -d --build`.
 
 De API gebruikt in Docker env vars (`PAZ_DB_HOST`, `PAZ_DB_NAME`, `PAZ_DB_USER`, `PAZ_DB_PASS`, `PAZ_ADMIN_PASSWORD`). In productie (cPanel) gebruik je `api/config.local.php`.
 

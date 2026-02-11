@@ -10,7 +10,6 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
 $body = read_json_body();
 
 $email = strtolower(trim((string)($body['email'] ?? '')));
-$answerRaw = $body['answer'] ?? null;
 $newsletter = (int)!!($body['newsletter_opt_in'] ?? false);
 $city = $body['city'] ?? null;
 
@@ -22,14 +21,6 @@ if (strlen($email) > 254) {
 }
 if ($email === 'admin') {
     json_fail(400, 'Dit e-mailadres is gereserveerd.');
-}
-
-if (!is_numeric($answerRaw)) {
-    json_fail(400, 'Ongeldige telling.');
-}
-$answer = (int)$answerRaw;
-if ($answer < 0 || $answer > 9999) {
-    json_fail(400, 'Ongeldige telling.');
 }
 
 if ($city !== null) {
@@ -49,19 +40,15 @@ $pdo = db();
 try {
     $pdo->beginTransaction();
 
-    // Lock settings row to keep participant sequence and gold assignment consistent.
-    $st = $pdo->query('SELECT participant_seq, next_gold_at, correct_answer FROM settings WHERE id = 1 FOR UPDATE');
-    $settings = $st->fetch();
+    $settings = $pdo->query('SELECT participant_seq, next_gold_at FROM settings WHERE id = 1 FOR UPDATE')->fetch();
     if (!$settings) {
         $pdo->rollBack();
         json_fail(500, 'Serverinstellingen ontbreken (settings).');
     }
 
-    $correctAnswer = (int)$settings['correct_answer'];
-    $isCorrect = (int)($answer === $correctAnswer);
-    $st2 = $pdo->prepare('SELECT id, player_no, is_gold, has_submitted_answer FROM participants WHERE email = :email FOR UPDATE');
-    $st2->execute([':email' => $email]);
-    $existing = $st2->fetch();
+    $st = $pdo->prepare('SELECT id, player_no, has_submitted_answer, is_gold FROM participants WHERE email = :email FOR UPDATE');
+    $st->execute([':email' => $email]);
+    $existing = $st->fetch();
 
     if ($existing) {
         if ((int)$existing['has_submitted_answer'] === 1) {
@@ -71,26 +58,17 @@ try {
             ]);
         }
 
-        $playerNo = (int)$existing['player_no'];
-        $isGold = (int)$existing['is_gold'];
-        $up = $pdo->prepare('
-            UPDATE participants
-            SET city = :city,
-                newsletter_opt_in = :newsletter,
-                answer = :answer,
-                is_correct = :is_correct,
-                has_submitted_answer = 1
-            WHERE id = :id
-        ');
+        $up = $pdo->prepare('UPDATE participants SET city = :city, newsletter_opt_in = :newsletter WHERE id = :id');
         $up->execute([
             ':city' => $city,
             ':newsletter' => $newsletter,
-            ':answer' => $answer,
-            ':is_correct' => $isCorrect,
             ':id' => (int)$existing['id'],
         ]);
+
+        $playerNo = (int)$existing['player_no'];
+        $isGold = (int)$existing['is_gold'];
+        $alreadyRegistered = true;
     } else {
-        // Fallback path: if someone skips "Verder", still process robustly.
         $participantSeq = (int)$settings['participant_seq'];
         $nextGoldAt = (int)$settings['next_gold_at'];
 
@@ -99,15 +77,13 @@ try {
 
         $ins = $pdo->prepare('
             INSERT INTO participants (player_no, email, city, newsletter_opt_in, answer, is_correct, has_submitted_answer, is_gold)
-            VALUES (:player_no, :email, :city, :newsletter, :answer, :is_correct, 1, :is_gold)
+            VALUES (:player_no, :email, :city, :newsletter, NULL, NULL, 0, :is_gold)
         ');
         $ins->execute([
             ':player_no' => $playerNo,
             ':email' => $email,
             ':city' => $city,
             ':newsletter' => $newsletter,
-            ':answer' => $answer,
-            ':is_correct' => $isCorrect,
             ':is_gold' => $isGold,
         ]);
 
@@ -115,6 +91,7 @@ try {
         if ($isGold === 1) {
             $pdo->prepare('UPDATE settings SET next_gold_at = next_gold_at + gold_interval WHERE id = 1')->execute();
         }
+        $alreadyRegistered = false;
     }
 
     $pdo->commit();
@@ -127,7 +104,8 @@ try {
 
 echo json_encode([
     'ok' => true,
+    'already_registered' => $alreadyRegistered,
     'player_no' => $playerNo,
-    'is_correct' => $isCorrect === 1,
     'is_gold' => $isGold === 1,
 ], JSON_UNESCAPED_UNICODE);
+

@@ -376,7 +376,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   if (continueBtn) {
-    continueBtn.addEventListener("click", () => {
+    continueBtn.addEventListener("click", async () => {
       const email = String(emailEl.value || "").trim();
       if (email.toLowerCase() === "admin") {
         setMsg(continueMsg, "Gebruik admin login hierboven.", "err");
@@ -387,6 +387,36 @@ document.addEventListener("DOMContentLoaded", () => {
         emailEl.reportValidity();
         return;
       }
+
+      const newsletter = $("newsletter").checked;
+      const city = String($("city").value || "").trim();
+
+      setBusy(true);
+      setMsg(continueMsg, "Opslaan...", "");
+      const res = await jsonPost("api/pre_register.php", {
+        email,
+        newsletter_opt_in: newsletter,
+        city: city.length ? city : null,
+      });
+      setBusy(false);
+
+      const data = res.data || {};
+      if (!res.ok || !data || data.ok !== true) {
+        const code = data.code || "";
+        const msg =
+          res.status === 0
+            ? "Geen verbinding met server."
+            : data.message ||
+              (code === "already_played"
+                ? "U hebt al deelgenomen aan deze wedstrijd; bedankt voor uw deelname."
+                : "Er ging iets mis. Probeer opnieuw.");
+        setMsg(continueMsg, msg, "err");
+        if (code === "already_played") {
+          setMsg(formMsg, msg, "err");
+        }
+        return;
+      }
+
       entryUnlocked = true;
       updateStep2();
       setMsg(continueMsg, "Top! Vul nu je totaal in.", "ok");

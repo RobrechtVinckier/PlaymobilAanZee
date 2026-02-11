@@ -21,8 +21,8 @@ try {
     $nextGoldAt = (int)$settings['next_gold_at'];
 
     $total = $participantSeq;
-    $correct = (int)$pdo->query('SELECT COUNT(*) FROM participants WHERE is_correct = 1')->fetchColumn();
-    $wrong = (int)$pdo->query('SELECT COUNT(*) FROM participants WHERE is_correct = 0')->fetchColumn();
+    $correct = (int)$pdo->query('SELECT COUNT(*) FROM participants WHERE has_submitted_answer = 1 AND is_correct = 1')->fetchColumn();
+    $wrong = (int)$pdo->query('SELECT COUNT(*) FROM participants WHERE has_submitted_answer = 1 AND is_correct = 0')->fetchColumn();
     $gold = (int)$pdo->query('SELECT COUNT(*) FROM participants WHERE is_gold = 1')->fetchColumn();
     $remainingToGold = max(1, $nextGoldAt - $participantSeq);
 
