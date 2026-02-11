@@ -94,15 +94,9 @@
       <section class="hero">
         <h1 class="hero__h1">Welkom!</h1>
         <p class="hero__p">
-          Tel alle verborgen <strong>vlaggetjes</strong> in elke diorama op de
-          beurs, tel ze samen (werk gerust samen!), en vul het totaal hieronder
-          in.
+          Tel alle verborgen vlaggetjes in elke diorama op de beurs, tel ze
+          samen, en vul het totaal hieronder in!
         </p>
-        <div class="hero__chips" aria-label="Snelle tips">
-          <div class="chip">1 deelname per e-mailadres</div>
-          <div class="chip">Alleen mobiel</div>
-          <div class="chip">Succes en veel plezier!</div>
-        </div>
       </section>
 
       <section class="card card--diorama" aria-label="Mini diorama">
@@ -151,10 +145,19 @@
               placeholder="jij@voorbeeld.be"
               required
             />
-            <span class="field__hint"
-              >We gebruiken dit om dubbele deelnames te voorkomen.</span
-            >
           </label>
+
+          <label class="check">
+            <input id="newsletter" type="checkbox" />
+            <span>Ja, je mag mij mailen voor de nieuwsbrief (optioneel)</span>
+          </label>
+
+          <div class="continueRow">
+            <button id="continueBtn" class="btn btn--ghost" type="button">
+              Verder
+            </button>
+            <div id="continueMsg" class="formMsg" role="status" aria-live="polite"></div>
+          </div>
 
           <div id="adminGate" class="adminGate" hidden>
             <div class="adminGate__note">
@@ -194,13 +197,6 @@
                 maxlength="120"
               />
               <span class="field__hint">Alleen voor statistieken.</span>
-            </label>
-
-            <label class="check">
-              <input id="newsletter" type="checkbox" />
-              <span
-                >Ja, je mag mij mailen voor de nieuwsbrief (optioneel)</span
-              >
             </label>
 
             <div id="step2" class="step2" aria-hidden="true">
@@ -285,7 +281,7 @@
     </main>
 
     <footer class="footer">
-      <details class="legal" open>
+      <details class="legal">
         <summary>Privacy & voorwaarden</summary>
         <div class="legal__body">
           <p>

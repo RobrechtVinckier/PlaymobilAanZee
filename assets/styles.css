@@ -436,6 +436,10 @@ body {
   margin-top: 10px;
 }
 
+.continueRow {
+  margin-top: 12px;
+}
+
 .field {
   display: block;
   margin-top: 12px;

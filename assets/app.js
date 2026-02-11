@@ -153,6 +153,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const hiddenFlag = $("hiddenFlag");
   const flagToast = $("flagToast");
   const emailEl = $("email");
+  const continueBtn = $("continueBtn");
+  const continueMsg = $("continueMsg");
   const answerEl = $("answer");
   const step2 = $("step2");
   const form = $("entryForm");
@@ -192,6 +194,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let foundFlag = false;
   let adminPw = "";
   let remainingLocal = null;
+  let entryUnlocked = false;
 
   function showOverlay(title, text, { confettiMode = "none" } = {}) {
     overlayTitle.textContent = title || "";
@@ -213,6 +216,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const els = [
       submitBtn,
       emailEl,
+      continueBtn,
       answerEl,
       $("newsletter"),
       $("city"),
@@ -257,9 +261,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const email = String(emailEl.value || "").trim();
     const adminMode = email.toLowerCase() === "admin";
     if (adminMode) {
+      entryUnlocked = false;
       show(adminGate);
       setMsg(adminGateMsg, "", "");
       hide(entryFields);
+      hide(continueBtn);
+      setMsg(continueMsg, "", "");
       step2.classList.remove("step2--on");
       answerEl.disabled = true;
       step2.setAttribute("aria-hidden", "true");
@@ -271,12 +278,14 @@ document.addEventListener("DOMContentLoaded", () => {
     hide(adminPanel);
     setMsg(adminGateMsg, "", "");
     show(entryFields);
+    show(continueBtn);
 
     const ok = isLikelyEmail(email);
-    if (ok) {
+    if (ok && entryUnlocked) {
       step2.classList.add("step2--on");
       answerEl.disabled = false;
       step2.setAttribute("aria-hidden", "false");
+      setMsg(continueMsg, "", "");
     } else {
       step2.classList.remove("step2--on");
       answerEl.disabled = true;
@@ -361,8 +370,25 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   if (emailEl) {
-    emailEl.addEventListener("input", updateStep2);
+    emailEl.addEventListener("input", () => {
+      entryUnlocked = false;
+      updateStep2();
+    });
     updateStep2();
+  }
+
+  if (continueBtn) {
+    continueBtn.addEventListener("click", () => {
+      if (!emailEl.checkValidity()) {
+        emailEl.reportValidity();
+        return;
+      }
+      entryUnlocked = true;
+      updateStep2();
+      if (!answerEl.disabled) {
+        answerEl.focus();
+      }
+    });
   }
 
   if (overlayClose) overlayClose.addEventListener("click", hideOverlay);
@@ -455,6 +481,10 @@ document.addEventListener("DOMContentLoaded", () => {
       // Trigger native validation UI where possible
       if (!emailEl.checkValidity()) {
         emailEl.reportValidity();
+        return;
+      }
+      if (!entryUnlocked) {
+        setMsg(continueMsg, "Klik eerst op 'Verder'.", "err");
         return;
       }
       if (answerEl.disabled || !answerEl.checkValidity()) {
