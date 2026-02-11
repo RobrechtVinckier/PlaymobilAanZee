@@ -5,14 +5,14 @@ CREATE TABLE IF NOT EXISTS settings (
   id TINYINT UNSIGNED NOT NULL,
   participant_seq INT UNSIGNED NOT NULL DEFAULT 0,
   next_gold_at INT UNSIGNED NOT NULL,
-  gold_interval INT UNSIGNED NOT NULL DEFAULT 100,
-  correct_answer INT UNSIGNED NOT NULL DEFAULT 0,
+  gold_interval INT UNSIGNED NOT NULL DEFAULT 200,
+  correct_answer INT UNSIGNED NOT NULL DEFAULT 17,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO settings (id, participant_seq, next_gold_at, gold_interval, correct_answer)
-VALUES (1, 0, 100, 100, 0)
+VALUES (1, 0, 200, 200, 17)
 ON DUPLICATE KEY UPDATE id = id;
 
 CREATE TABLE IF NOT EXISTS participants (

@@ -190,13 +190,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let confettiRun = null;
   let confettiGoldRun = null;
+  let overlayOnClose = null;
   let adminPw = "";
   let remainingLocal = null;
   let entryUnlocked = false;
 
-  function showOverlay(title, text, { confettiMode = "none", tone = "normal" } = {}) {
+  function showOverlay(
+    title,
+    text,
+    { confettiMode = "none", tone = "normal", onClose = null } = {}
+  ) {
     overlayTitle.textContent = title || "";
     overlayText.textContent = text || "";
+    overlayOnClose = typeof onClose === "function" ? onClose : null;
     if (overlayCard) {
       overlayCard.classList.remove("overlay__card--error");
       if (tone === "error") {
@@ -214,6 +220,24 @@ document.addEventListener("DOMContentLoaded", () => {
     hide(overlay);
     if (confettiRun) confettiRun.stop();
     confettiRun = null;
+    if (overlayOnClose) {
+      const fn = overlayOnClose;
+      overlayOnClose = null;
+      fn();
+    }
+  }
+
+  function resetForNextPlayer() {
+    form.reset();
+    entryUnlocked = false;
+    setMsg(formMsg, "", "");
+    setMsg(continueMsg, "", "");
+    emailEl.disabled = false;
+    answerEl.disabled = true;
+    step2.classList.remove("step2--on");
+    step2.setAttribute("aria-hidden", "true");
+    updateStep2();
+    emailEl.focus();
   }
 
   function setBusy(isBusy) {
@@ -557,19 +581,22 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // Success UI
-      emailEl.disabled = true;
-      answerEl.disabled = true;
-      $("newsletter").disabled = true;
-      $("city").disabled = true;
-      if (submitBtn) submitBtn.disabled = true;
-
       if (data.is_gold) {
+        emailEl.disabled = true;
+        answerEl.disabled = true;
+        $("newsletter").disabled = true;
+        $("city").disabled = true;
+        if (submitBtn) submitBtn.disabled = true;
         enterGoldScreen(data.player_no);
         return;
       }
 
       if (data.is_correct) {
+        emailEl.disabled = true;
+        answerEl.disabled = true;
+        $("newsletter").disabled = true;
+        $("city").disabled = true;
+        if (submitBtn) submitBtn.disabled = true;
         showOverlay(
           "Goed gedaan!",
           "Je antwoord is binnen. Bedankt voor je deelname!",
@@ -580,7 +607,7 @@ document.addEventListener("DOMContentLoaded", () => {
         showOverlay(
           ":( Sorry, dat is niet correct.",
           "Jammer! Dit antwoord klopt niet. Bedankt voor je deelname.",
-          { confettiMode: "none", tone: "error" }
+          { confettiMode: "none", tone: "error", onClose: resetForNextPlayer }
         );
         setMsg(formMsg, "Sorry, dat is niet correct.", "err");
       }

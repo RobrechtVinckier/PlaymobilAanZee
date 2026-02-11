@@ -34,4 +34,4 @@ De API gebruikt in Docker env vars (`PAZ_DB_HOST`, `PAZ_DB_NAME`, `PAZ_DB_USER`,
 - Wachtwoord = `admin_password` uit `api/config.local.php`.
 - In het admin paneel kan je zien hoeveel deelnemers er zijn, hoeveel juist/fout, en wie de gouden winnaars zijn.
 - "Volgende gouden prijs over" bepaalt hoeveel deelnemers er nog moeten bijkomen tot de volgende gouden prijs.
-- Gouden prijs: standaard elke 100e **unieke** deelnemer (1 deelnemer = 1 e-mail).
+- Gouden prijs: standaard elke 200e **unieke** deelnemer (1 deelnemer = 1 e-mail).

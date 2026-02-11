@@ -56,7 +56,12 @@ foreach (['db_host', 'db_name', 'db_user', 'db_pass', 'admin_password'] as $k) {
 function db(): PDO
 {
     static $pdo = null;
+    static $schemaChecked = false;
     if ($pdo instanceof PDO) {
+        if (!$schemaChecked) {
+            ensure_schema($pdo);
+            $schemaChecked = true;
+        }
         return $pdo;
     }
 
@@ -78,7 +83,29 @@ function db(): PDO
         json_fail(500, 'Database connectie mislukt.');
     }
 
+    if (!$schemaChecked) {
+        ensure_schema($pdo);
+        $schemaChecked = true;
+    }
+
     return $pdo;
+}
+
+function ensure_schema(PDO $pdo): void
+{
+    try {
+        $col = $pdo->query("SHOW COLUMNS FROM participants LIKE 'has_submitted_answer'")->fetch();
+        if (!$col) {
+            $pdo->exec("ALTER TABLE participants ADD COLUMN has_submitted_answer TINYINT(1) NOT NULL DEFAULT 0");
+        }
+
+        $pdo->exec("ALTER TABLE participants MODIFY COLUMN answer INT UNSIGNED NULL");
+        $pdo->exec("ALTER TABLE participants MODIFY COLUMN is_correct TINYINT(1) NULL");
+
+        $pdo->exec("UPDATE participants SET has_submitted_answer = 1 WHERE has_submitted_answer = 0 AND answer IS NOT NULL");
+    } catch (Throwable $e) {
+        json_fail(500, 'Serverfout.');
+    }
 }
 
 function require_admin(array $body): void
