@@ -1,5 +1,7 @@
 # Local secrets (do not commit)
 api/config.local.php
+.env
+.env.*
 
 # OS / tooling
 .DS_Store
@@ -7,4 +9,3 @@ Thumbs.db
 *.log
 node_modules/
 dist/
-

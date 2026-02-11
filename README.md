@@ -8,6 +8,19 @@ Mobile-only wedstrijdsite (NL) + minimale PHP API voor opslag in MySQL (cPanel).
 2. Importeer `db/schema.sql` via phpMyAdmin (Import).
 3. Maak op de server het bestand `api/config.local.php` (wordt niet meegecommit) op basis van `api/config.example.php`.
 
+## Lokaal testen (Docker)
+
+Er zit een `docker-compose.yml` in de repo zodat je geen PHP/MySQL lokaal hoeft te installeren.
+
+1. Start:
+   - `docker compose up -d`
+2. Open:
+   - `http://localhost:8080`
+3. Reset DB (alles wissen):
+   - `docker compose down -v`
+
+De API gebruikt in Docker env vars (`PAZ_DB_HOST`, `PAZ_DB_NAME`, `PAZ_DB_USER`, `PAZ_DB_PASS`, `PAZ_ADMIN_PASSWORD`). In productie (cPanel) gebruik je `api/config.local.php`.
+
 ## Belangrijk
 
 - Zet `admin_password` in `api/config.local.php` op iets anders dan `admin` voor je live gaat.

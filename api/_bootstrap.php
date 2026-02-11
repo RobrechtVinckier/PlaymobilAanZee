@@ -29,18 +29,27 @@ function read_json_body(): array
 }
 
 $configPath = __DIR__ . '/config.local.php';
-if (!file_exists($configPath)) {
-    json_fail(500, 'Server niet geconfigureerd: maak api/config.local.php op basis van api/config.example.php.');
+$CFG = null;
+if (file_exists($configPath)) {
+    $CFG = require $configPath;
+} else {
+    // Optional: allow running via environment variables (useful for Docker local dev).
+    $CFG = [
+        'db_host' => (string)(getenv('PAZ_DB_HOST') ?: ''),
+        'db_name' => (string)(getenv('PAZ_DB_NAME') ?: ''),
+        'db_user' => (string)(getenv('PAZ_DB_USER') ?: ''),
+        'db_pass' => (string)(getenv('PAZ_DB_PASS') ?: ''),
+        'admin_password' => (string)(getenv('PAZ_ADMIN_PASSWORD') ?: ''),
+    ];
 }
 
-$CFG = require $configPath;
 if (!is_array($CFG)) {
     json_fail(500, 'Ongeldige serverconfig.');
 }
 
 foreach (['db_host', 'db_name', 'db_user', 'db_pass', 'admin_password'] as $k) {
     if (!array_key_exists($k, $CFG) || trim((string)$CFG[$k]) === '') {
-        json_fail(500, "Serverconfig mist sleutel: {$k}");
+        json_fail(500, "Serverconfig mist sleutel: {$k}. Maak api/config.local.php (zie api/config.example.php) of zet env vars (PAZ_DB_HOST, PAZ_DB_NAME, PAZ_DB_USER, PAZ_DB_PASS, PAZ_ADMIN_PASSWORD).");
     }
 }
 
