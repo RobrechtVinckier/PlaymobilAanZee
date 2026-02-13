@@ -637,7 +637,7 @@ document.addEventListener("DOMContentLoaded", () => {
         $("city").disabled = true;
         if (submitBtn) submitBtn.disabled = true;
         showOverlay(
-          "JOEPIE! Helemaal juist!",
+          "🎉JOEPIE! Helemaal juist!🎉",
           "Proficiat! Je bent gewonnen! Toon dit scherm aan onze crew.",
           { confettiMode: "loop", tone: "winner", persistent: true }
         );
