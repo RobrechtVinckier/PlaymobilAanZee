@@ -35,11 +35,11 @@ body {
   font-family: ui-rounded, "Comic Sans MS", "Trebuchet MS", system-ui, sans-serif;
   background: linear-gradient(
       180deg,
-      rgba(247, 251, 255, 0.88) 0%,
-      rgba(247, 251, 255, 0.78) 38%,
-      rgba(255, 255, 255, 0.9) 100%
+      rgba(247, 251, 255, 0.56) 0%,
+      rgba(247, 251, 255, 0.42) 38%,
+      rgba(255, 255, 255, 0.62) 100%
     ),
-    url("../image/Background.jpg");
+    url("../image/Background2.jpg");
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
@@ -219,11 +219,22 @@ body {
 .page {
   width: min(440px, 100%);
   margin: 0 auto;
-  padding: 14px 14px 44px;
+  padding: 8px 14px 44px;
 }
 
 .hero {
   padding: 14px 12px 12px;
+}
+
+.hero--intro {
+  margin-top: 4px;
+}
+
+.hero__brand {
+  font-size: 14px;
+  font-weight: 1000;
+  letter-spacing: 0.2px;
+  color: rgba(16, 42, 67, 0.82);
 }
 
 .hero__h1 {
