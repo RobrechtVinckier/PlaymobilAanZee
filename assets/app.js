@@ -191,6 +191,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let confettiRun = null;
   let confettiGoldRun = null;
   let overlayOnClose = null;
+  let overlayPersistent = false;
   let adminPw = "";
   let remainingLocal = null;
   let entryUnlocked = false;
@@ -199,16 +200,23 @@ document.addEventListener("DOMContentLoaded", () => {
   function showOverlay(
     title,
     text,
-    { confettiMode = "none", tone = "normal", onClose = null } = {}
+    { confettiMode = "none", tone = "normal", onClose = null, persistent = false } = {}
   ) {
     overlayTitle.textContent = title || "";
     overlayText.textContent = text || "";
     overlayOnClose = typeof onClose === "function" ? onClose : null;
+    overlayPersistent = !!persistent;
     if (overlayCard) {
-      overlayCard.classList.remove("overlay__card--error");
+      overlayCard.classList.remove("overlay__card--error", "overlay__card--winner");
       if (tone === "error") {
         overlayCard.classList.add("overlay__card--error");
       }
+      if (tone === "winner") {
+        overlayCard.classList.add("overlay__card--winner");
+      }
+    }
+    if (overlayClose) {
+      overlayClose.hidden = overlayPersistent;
     }
     show(overlay);
     if (!prefersReducedMotion() && confettiMode !== "none") {
@@ -217,10 +225,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function hideOverlay() {
+  function hideOverlay(force = false) {
+    if (overlayPersistent && !force) {
+      return;
+    }
     hide(overlay);
     if (confettiRun) confettiRun.stop();
     confettiRun = null;
+    overlayPersistent = false;
+    if (overlayClose) {
+      overlayClose.hidden = false;
+    }
     if (overlayOnClose) {
       const fn = overlayOnClose;
       overlayOnClose = null;
@@ -622,9 +637,9 @@ document.addEventListener("DOMContentLoaded", () => {
         $("city").disabled = true;
         if (submitBtn) submitBtn.disabled = true;
         showOverlay(
-          "🎉 Joepie! Helemaal juist! 🎉",
-          "Fantastisch geteld! Bedankt voor je deelname!",
-          { confettiMode: "loop" }
+          "JOEPIE! Helemaal juist!",
+          "Proficiat! Je bent gewonnen! Toon dit scherm aan onze crew.",
+          { confettiMode: "loop", tone: "winner", persistent: true }
         );
         setMsg(formMsg, "Ingediend. Succes!", "ok");
       } else {
