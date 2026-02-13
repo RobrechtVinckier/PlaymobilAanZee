@@ -15,7 +15,7 @@ if (!is_numeric($remaining)) {
     json_fail(400, 'Ongeldige waarde.');
 }
 $remaining = (int)$remaining;
-if ($remaining < 1 || $remaining > 1000000) {
+if ($remaining < 1 || $remaining > 1000) {
     json_fail(400, 'Ongeldige waarde.');
 }
 

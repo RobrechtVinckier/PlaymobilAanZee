@@ -178,7 +178,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const statCorrect = $("statCorrect");
   const statWrong = $("statWrong");
   const statGold = $("statGold");
-  const goldRemaining = $("goldRemaining");
+  const goldRemainingInput = $("goldRemainingInput");
   const goldMinus = $("goldMinus");
   const goldPlus = $("goldPlus");
   const goldApply = $("goldApply");
@@ -194,6 +194,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let adminPw = "";
   let remainingLocal = null;
   let entryUnlocked = false;
+  let adminGateActive = false;
 
   function showOverlay(
     title,
@@ -254,6 +255,7 @@ document.addEventListener("DOMContentLoaded", () => {
       goldApply,
       goldMinus,
       goldPlus,
+      goldRemainingInput,
     ];
 
     for (const el of els) {
@@ -273,11 +275,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function enterGoldScreen(rank) {
-    goldTitle.textContent =
-      "Je bent onze " +
-      String(rank) +
-      "ste speler! Je hebt de gouden prijs gewonnen!";
+  function enterGoldScreen() {
+    goldTitle.textContent = "Je hebt de gouden prijs gewonnen!";
     show(goldScreen);
     if (!prefersReducedMotion()) {
       if (confettiGoldRun) confettiGoldRun.stop();
@@ -287,7 +286,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function updateStep2() {
     const email = String(emailEl.value || "").trim();
-    const adminMode = email.toLowerCase() === "admin";
+    const adminMode = email.toLowerCase() === "admin" && adminGateActive;
     if (adminMode) {
       entryUnlocked = false;
       show(adminGate);
@@ -341,8 +340,10 @@ document.addEventListener("DOMContentLoaded", () => {
     statWrong.textContent = String(s.wrong);
     statGold.textContent = String(s.gold);
 
-    remainingLocal = s.remaining_to_gold;
-    goldRemaining.textContent = String(remainingLocal);
+    remainingLocal = clamp(Number(s.remaining_to_gold), 1, 1000);
+    if (goldRemainingInput) {
+      goldRemainingInput.value = String(remainingLocal);
+    }
 
     winnersList.textContent = "";
     const winners = res.data.winners || [];
@@ -376,11 +377,11 @@ document.addEventListener("DOMContentLoaded", () => {
         setTimeout(() => hide(intro), 200);
         return;
       }
-      setTimeout(() => intro.classList.add("intro--wash"), 900);
+      setTimeout(() => intro.classList.add("intro--wash"), 700);
       setTimeout(() => {
         intro.classList.add("intro--hide");
         setTimeout(() => hide(intro), 540);
-      }, 1900);
+      }, 2500);
     };
     doIntro();
   }
@@ -392,6 +393,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (emailEl) {
     emailEl.addEventListener("input", () => {
+      adminGateActive = false;
       entryUnlocked = false;
       setMsg(continueMsg, "", "");
       updateStep2();
@@ -403,9 +405,15 @@ document.addEventListener("DOMContentLoaded", () => {
     continueBtn.addEventListener("click", async () => {
       const email = String(emailEl.value || "").trim();
       if (email.toLowerCase() === "admin") {
-        setMsg(continueMsg, "Gebruik admin login hierboven.", "err");
+        adminGateActive = true;
+        updateStep2();
+        setMsg(continueMsg, "", "");
+        if (adminPassword) {
+          adminPassword.focus();
+        }
         return;
       }
+      adminGateActive = false;
       if (!emailEl.checkValidity()) {
         setMsg(continueMsg, "Vul eerst een geldig e-mailadres in.", "err");
         emailEl.reportValidity();
@@ -482,13 +490,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function updateRemainingUI() {
     if (remainingLocal == null) return;
-    goldRemaining.textContent = String(remainingLocal);
+    if (goldRemainingInput) {
+      goldRemainingInput.value = String(remainingLocal);
+    }
   }
 
   if (goldMinus) {
     goldMinus.addEventListener("click", () => {
       if (remainingLocal == null) return;
-      remainingLocal = clamp(Number(remainingLocal) - 1, 1, 1000000);
+      remainingLocal = clamp(Number(remainingLocal) - 1, 1, 1000);
       updateRemainingUI();
     });
   }
@@ -496,13 +506,27 @@ document.addEventListener("DOMContentLoaded", () => {
   if (goldPlus) {
     goldPlus.addEventListener("click", () => {
       if (remainingLocal == null) return;
-      remainingLocal = clamp(Number(remainingLocal) + 1, 1, 1000000);
+      remainingLocal = clamp(Number(remainingLocal) + 1, 1, 1000);
       updateRemainingUI();
+    });
+  }
+
+  if (goldRemainingInput) {
+    goldRemainingInput.addEventListener("input", () => {
+      const n = Number(goldRemainingInput.value);
+      if (!Number.isFinite(n)) return;
+      remainingLocal = clamp(Math.floor(n), 1, 1000);
     });
   }
 
   if (goldApply) {
     goldApply.addEventListener("click", async () => {
+      if (goldRemainingInput) {
+        const n = Number(goldRemainingInput.value);
+        if (Number.isFinite(n)) {
+          remainingLocal = clamp(Math.floor(n), 1, 1000);
+        }
+      }
       if (remainingLocal == null) return;
       setBusy(true);
       setMsg(adminMsg, "Toepassen...", "");
@@ -533,7 +557,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const email = String(emailEl.value || "").trim();
       const isAdmin = email.toLowerCase() === "admin";
       if (isAdmin) {
-        setMsg(formMsg, "Gebruik de admin knop hierboven.", "err");
+        setMsg(formMsg, "Klik op 'Verder' om admin login te openen.", "err");
         return;
       }
 
@@ -587,7 +611,7 @@ document.addEventListener("DOMContentLoaded", () => {
         $("newsletter").disabled = true;
         $("city").disabled = true;
         if (submitBtn) submitBtn.disabled = true;
-        enterGoldScreen(data.player_no);
+        enterGoldScreen();
         return;
       }
 
@@ -598,9 +622,9 @@ document.addEventListener("DOMContentLoaded", () => {
         $("city").disabled = true;
         if (submitBtn) submitBtn.disabled = true;
         showOverlay(
-          "Goed gedaan!",
-          "Je antwoord is binnen. Bedankt voor je deelname!",
-          { confettiMode: "burst" }
+          "🎉 Joepie! Helemaal juist! 🎉",
+          "Fantastisch geteld! Bedankt voor je deelname!",
+          { confettiMode: "loop" }
         );
         setMsg(formMsg, "Ingediend. Succes!", "ok");
       } else {

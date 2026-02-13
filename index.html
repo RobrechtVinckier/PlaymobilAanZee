@@ -55,7 +55,6 @@
         </div>
         <div class="intro__title">Playmobil aan Zee</div>
         <div class="intro__subtitle">Wedstrijd</div>
-        <div class="intro__hint">Kijk goed... er spoelt zo iets aan.</div>
       </div>
 
       <svg
@@ -78,16 +77,10 @@
     </div>
 
     <header class="topbar">
-      <div class="topbar__badge" aria-hidden="true">
-        <span class="badge__dot"></span>
-        <span class="badge__dot"></span>
-        <span class="badge__dot"></span>
-      </div>
       <div class="topbar__title">
         <span class="topbar__titleMain">Playmobil aan Zee</span>
         <span class="topbar__titleSub">Wedstrijd</span>
       </div>
-      <div class="topbar__sun" aria-hidden="true"></div>
     </header>
 
     <main class="page">
@@ -133,7 +126,6 @@
                 class="field__input"
                 type="password"
                 autocomplete="current-password"
-                placeholder="admin"
               />
             </label>
             <button id="adminLogin" class="btn btn--primary" type="button">
@@ -230,7 +222,17 @@
           <div class="goldCtrl__row">
             <button id="goldMinus" class="btn btn--ghost" type="button">-</button>
             <div class="goldCtrl__num">
-              <span id="goldRemaining">-</span> deelnemers
+              <input
+                id="goldRemainingInput"
+                class="goldCtrl__input"
+                type="number"
+                inputmode="numeric"
+                min="1"
+                max="1000"
+                step="1"
+                value="1"
+              />
+              <span> deelnemers</span>
             </div>
             <button id="goldPlus" class="btn btn--ghost" type="button">+</button>
           </div>
