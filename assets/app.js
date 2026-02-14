@@ -166,7 +166,7 @@ const I18N = {
     hero_brand: "Playmobil aan Zee Wedstrijd",
     hero_title: "Welkom!",
     hero_text:
-      "Tel alle verborgen vlaggetjes in elke diorama op de beurs, tel ze samen, en vul het totaal hieronder in!",
+      "Tel alle verborgen vlaggetjes in elk diorama op de beurs, tel ze samen, en vul het totaal hieronder in!",
     form_aria: "Wedstrijdformulier",
     form_title: "Doe mee",
     label_email: "E-mailadres",
