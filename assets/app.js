@@ -454,22 +454,6 @@ const I18N = {
 const SUPPORTED_LANGS = ["nl", "en", "de", "fr"];
 let currentLang = "nl";
 
-function safeLocalStorageGet(key) {
-  try {
-    return window.localStorage.getItem(key);
-  } catch (err) {
-    return null;
-  }
-}
-
-function safeLocalStorageSet(key, value) {
-  try {
-    window.localStorage.setItem(key, value);
-  } catch (err) {
-    return;
-  }
-}
-
 function getLangFromUrl() {
   const params = new URLSearchParams(window.location.search || "");
   const lang = String(params.get("lang") || "").toLowerCase();
@@ -511,12 +495,11 @@ function applyTranslations() {
   });
 }
 
-function setLang(lang, { updateUrl = true, persist = true } = {}) {
+function setLang(lang, { updateUrl = true } = {}) {
   const normalized = String(lang || "").toLowerCase();
   const next = SUPPORTED_LANGS.includes(normalized) ? normalized : "nl";
   currentLang = next;
   applyTranslations();
-  if (persist) safeLocalStorageSet("lang", next);
   if (updateUrl) {
     const url = new URL(window.location.href);
     url.searchParams.set("lang", next);
@@ -532,13 +515,12 @@ function setLang(lang, { updateUrl = true, persist = true } = {}) {
 
 document.addEventListener("DOMContentLoaded", () => {
   const urlLang = getLangFromUrl();
-  const storedLang = safeLocalStorageGet("lang");
-  setLang(urlLang || storedLang || "nl", { updateUrl: !!urlLang });
+  setLang(urlLang || "nl", { updateUrl: !!urlLang });
 
   document.querySelectorAll(".langSwitch__btn").forEach((btn) => {
     btn.addEventListener("click", () => {
       const lang = String(btn.dataset.lang || "").toLowerCase();
-      setLang(lang, { updateUrl: true, persist: true });
+      setLang(lang, { updateUrl: true });
     });
   });
 
