@@ -46,12 +46,12 @@ try {
         json_fail(500, 'Serverinstellingen ontbreken (settings).');
     }
 
-    $st = $pdo->prepare('SELECT id, player_no, has_submitted_answer, is_gold FROM participants WHERE email = :email FOR UPDATE');
+    $st = $pdo->prepare('SELECT id, player_no, has_submitted_answer, is_correct, is_gold FROM participants WHERE email = :email FOR UPDATE');
     $st->execute([':email' => $email]);
     $existing = $st->fetch();
 
     if ($existing) {
-        if ((int)$existing['has_submitted_answer'] === 1) {
+        if ((int)$existing['has_submitted_answer'] === 1 && (int)$existing['is_correct'] === 1) {
             $pdo->rollBack();
             json_fail(409, 'U hebt al deelgenomen aan deze wedstrijd; bedankt voor uw deelname.', [
                 'code' => 'already_played',
@@ -108,4 +108,3 @@ echo json_encode([
     'player_no' => $playerNo,
     'is_gold' => $isGold === 1,
 ], JSON_UNESCAPED_UNICODE);
-

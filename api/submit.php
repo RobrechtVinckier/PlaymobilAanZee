@@ -59,12 +59,12 @@ try {
 
     $correctAnswer = (int)$settings['correct_answer'];
     $isCorrect = (int)($answer === $correctAnswer);
-    $st2 = $pdo->prepare('SELECT id, player_no, is_gold, has_submitted_answer FROM participants WHERE email = :email FOR UPDATE');
+    $st2 = $pdo->prepare('SELECT id, player_no, is_gold, has_submitted_answer, is_correct FROM participants WHERE email = :email FOR UPDATE');
     $st2->execute([':email' => $email]);
     $existing = $st2->fetch();
 
     if ($existing) {
-        if ((int)$existing['has_submitted_answer'] === 1) {
+        if ((int)$existing['has_submitted_answer'] === 1 && (int)$existing['is_correct'] === 1) {
             $pdo->rollBack();
             json_fail(409, 'U hebt al deelgenomen aan deze wedstrijd; bedankt voor uw deelname.', [
                 'code' => 'already_played',

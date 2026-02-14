@@ -202,7 +202,7 @@ const I18N = {
     gold_screen_text: "Je scherm blijft zo staan. Laat dit zien aan onze crew.",
     lang_switch_aria: "Taalkeuze",
     trophy_aria: "Trofee",
-    gold_winner_title: "Je hebt de gouden prijs gewonnen!",
+    gold_winner_title: "Je hebt een hoofdprijs gewonnen !",
     msg_loading: "Laden...",
     msg_no_connection: "Geen verbinding met server.",
     msg_admin_login_failed: "Admin login mislukt.",
@@ -225,11 +225,10 @@ const I18N = {
     msg_submitted: "Ingediend. Succes!",
     overlay_correct_title: "🎉JOEPIE!🎉Helemaal juist!",
     overlay_correct_text:
-      "Proficiat! Je bent gewonnen! Toon dit scherm aan onze crew.",
+      "Helaas geen hoofdprijs, maar je kan alsnog een figuur afhalen bij de crew.",
     overlay_wrong_title: ":( Sorry, dat is niet correct.",
-    overlay_wrong_text:
-      "Jammer! Dit antwoord klopt niet. Bedankt voor je deelname.",
-    msg_wrong_short: "Sorry, dat is niet correct.",
+    overlay_wrong_text: "Probeer opnieuw met hetzelfde emailadres.",
+    msg_wrong_short: "Probeer opnieuw met hetzelfde emailadres.",
   },
   en: {
     page_title: "Playmobil aan Zee | Contest",
@@ -275,7 +274,7 @@ const I18N = {
     gold_screen_text: "This screen stays on. Show it to our crew.",
     lang_switch_aria: "Language switcher",
     trophy_aria: "Trophy",
-    gold_winner_title: "You won the gold prize!",
+    gold_winner_title: "You won a grand prize!",
     msg_loading: "Loading...",
     msg_no_connection: "No connection to server.",
     msg_admin_login_failed: "Admin login failed.",
@@ -297,10 +296,11 @@ const I18N = {
     msg_sending: "Sending...",
     msg_submitted: "Submitted. Good luck!",
     overlay_correct_title: "🎉YAY!🎉Correct!",
-    overlay_correct_text: "Congrats! You won! Show this screen to our crew.",
+    overlay_correct_text:
+      "No grand prize, but you can still pick up a figure from the crew.",
     overlay_wrong_title: ":( Sorry, that's not correct.",
-    overlay_wrong_text: "Too bad! That answer is not correct. Thanks for joining.",
-    msg_wrong_short: "Sorry, that's not correct.",
+    overlay_wrong_text: "Try again with the same email address.",
+    msg_wrong_short: "Try again with the same email address.",
   },
   de: {
     page_title: "Playmobil aan Zee | Wettbewerb",
@@ -346,7 +346,7 @@ const I18N = {
     gold_screen_text: "Dieser Bildschirm bleibt stehen. Zeig ihn unserem Team.",
     lang_switch_aria: "Sprachauswahl",
     trophy_aria: "Pokal",
-    gold_winner_title: "Du hast den Goldpreis gewonnen!",
+    gold_winner_title: "Du hast einen Hauptpreis gewonnen!",
     msg_loading: "Laden...",
     msg_no_connection: "Keine Verbindung zum Server.",
     msg_admin_login_failed: "Admin-Login fehlgeschlagen.",
@@ -369,11 +369,10 @@ const I18N = {
     msg_submitted: "Eingereicht. Viel Erfolg!",
     overlay_correct_title: "🎉Juhu!🎉Alles richtig!",
     overlay_correct_text:
-      "Glückwunsch! Du hast gewonnen! Zeig diesen Bildschirm unserem Team.",
+      "Leider kein Hauptpreis, aber du kannst trotzdem eine Figur beim Team abholen.",
     overlay_wrong_title: ":( Sorry, das ist nicht korrekt.",
-    overlay_wrong_text:
-      "Schade! Diese Antwort ist nicht korrekt. Danke fürs Mitmachen.",
-    msg_wrong_short: "Sorry, das ist nicht korrekt.",
+    overlay_wrong_text: "Versuche es erneut mit derselben E-Mail-Adresse.",
+    msg_wrong_short: "Versuche es erneut mit derselben E-Mail-Adresse.",
   },
   fr: {
     page_title: "Playmobil aan Zee | Concours",
@@ -420,7 +419,7 @@ const I18N = {
       "Cet ecran reste affiche. Montrez-le a notre equipe.",
     lang_switch_aria: "Choix de langue",
     trophy_aria: "Trophee",
-    gold_winner_title: "Vous avez gagne le prix or !",
+    gold_winner_title: "Vous avez gagne un grand prix !",
     msg_loading: "Chargement...",
     msg_no_connection: "Pas de connexion au serveur.",
     msg_admin_login_failed: "Connexion admin echouee.",
@@ -443,11 +442,11 @@ const I18N = {
     msg_submitted: "Envoye. Bonne chance !",
     overlay_correct_title: "🎉Bravo !🎉Correct !",
     overlay_correct_text:
-      "Felicitations ! Vous avez gagne ! Montrez cet ecran a notre equipe.",
+      "Malheureusement pas de grand prix, mais vous pouvez quand meme retirer une figurine aupres de notre equipe.",
     overlay_wrong_title: ":( Desole, ce n'est pas correct.",
     overlay_wrong_text:
-      "Dommage ! Cette reponse n'est pas correcte. Merci pour votre participation.",
-    msg_wrong_short: "Desole, ce n'est pas correct.",
+      "Essayez a nouveau avec la meme adresse e-mail.",
+    msg_wrong_short: "Essayez a nouveau avec la meme adresse e-mail.",
   },
 };
 
@@ -619,7 +618,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function resetForNextPlayer() {
+    const emailValue = String(emailEl.value || "");
     form.reset();
+    emailEl.value = emailValue;
     entryUnlocked = false;
     setMsg(formMsg, "", "");
     setMsg(continueMsg, "", "");
