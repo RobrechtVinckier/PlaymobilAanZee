@@ -645,6 +645,15 @@ body {
   gap: 6px;
 }
 
+.goldCtrl__unit {
+  margin-top: 6px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 800;
+  color: rgba(16, 42, 67, 0.7);
+  letter-spacing: 0.02em;
+}
+
 .goldCtrl__input {
   width: 84px;
   height: 42px;
