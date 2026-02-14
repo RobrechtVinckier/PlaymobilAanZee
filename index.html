@@ -11,15 +11,57 @@
     <link rel="stylesheet" href="assets/styles.css" />
   </head>
   <body>
-    <nav class="langSwitch" aria-label="Language switcher">
-      <a class="langSwitch__btn" href="?lang=en" lang="en">EN</a>
-      <a class="langSwitch__btn" href="?lang=de" lang="de">DE</a>
-      <a class="langSwitch__btn" href="?lang=fr" lang="fr">FR</a>
+    <nav
+      class="langSwitch"
+      aria-label="Taalkeuze"
+      data-i18n-attr="aria-label:lang_switch_aria"
+    >
+      <button
+        class="langSwitch__btn"
+        type="button"
+        data-lang="nl"
+        aria-label="Nederlands"
+        title="Nederlands"
+      >
+        🇳🇱
+      </button>
+      <button
+        class="langSwitch__btn"
+        type="button"
+        data-lang="en"
+        aria-label="English"
+        title="English"
+      >
+        🇬🇧
+      </button>
+      <button
+        class="langSwitch__btn"
+        type="button"
+        data-lang="de"
+        aria-label="Deutsch"
+        title="Deutsch"
+      >
+        🇩🇪
+      </button>
+      <button
+        class="langSwitch__btn"
+        type="button"
+        data-lang="fr"
+        aria-label="Francais"
+        title="Francais"
+      >
+        🇫🇷
+      </button>
     </nav>
 
     <div id="intro" class="intro" aria-hidden="true">
       <div class="intro__card">
-        <div class="logo" role="img" aria-label="Smiley logo">
+        <div
+          class="logo"
+          role="img"
+          aria-label="Smiley logo"
+          data-i18n-attr="aria-label:logo_aria"
+        >
           <svg
             class="logo__svg"
             width="160"
@@ -59,8 +101,8 @@
             <circle cx="125" cy="86" r="10" fill="#ff5a7a" opacity="0.35" />
           </svg>
         </div>
-        <div class="intro__title">Playmobil aan Zee</div>
-        <div class="intro__subtitle">Wedstrijd</div>
+        <div class="intro__title" data-i18n="intro_title">Playmobil aan Zee</div>
+        <div class="intro__subtitle" data-i18n="intro_subtitle">Wedstrijd</div>
       </div>
 
       <svg
@@ -84,20 +126,26 @@
 
     <main class="page">
       <section class="card hero hero--intro">
-        <div class="hero__brand">Playmobil aan Zee Wedstrijd</div>
-        <h1 class="hero__h1">Welkom!</h1>
-        <p class="hero__p">
+        <div class="hero__brand" data-i18n="hero_brand">
+          Playmobil aan Zee Wedstrijd
+        </div>
+        <h1 class="hero__h1" data-i18n="hero_title">Welkom!</h1>
+        <p class="hero__p" data-i18n="hero_text">
           Tel alle verborgen vlaggetjes in elke diorama op de beurs, tel ze
           samen, en vul het totaal hieronder in!
         </p>
       </section>
 
-      <section class="card" aria-label="Wedstrijdformulier">
-        <h2 class="card__title">Doe mee</h2>
+      <section
+        class="card"
+        aria-label="Wedstrijdformulier"
+        data-i18n-attr="aria-label:form_aria"
+      >
+        <h2 class="card__title" data-i18n="form_title">Doe mee</h2>
 
         <form id="entryForm" class="form" novalidate>
           <label class="field">
-            <span class="field__label">E-mailadres</span>
+            <span class="field__label" data-i18n="label_email">E-mailadres</span>
             <input
               id="email"
               name="email"
@@ -106,21 +154,26 @@
               inputmode="email"
               autocomplete="email"
               placeholder="jij@voorbeeld.be"
+              data-i18n-attr="placeholder:email_placeholder"
               required
             />
           </label>
 
           <label class="check">
             <input id="newsletter" type="checkbox" />
-            <span>Ja, je mag mij mailen voor de nieuwsbrief (optioneel)</span>
+            <span data-i18n="label_newsletter">
+              Ja, je mag mij mailen voor de nieuwsbrief (optioneel)
+            </span>
           </label>
 
           <div id="adminGate" class="adminGate" hidden>
-            <div class="adminGate__note">
+            <div class="adminGate__note" data-i18n="admin_gate_note">
               Admin modus. Vul het wachtwoord in.
             </div>
             <label class="field">
-              <span class="field__label">Wachtwoord</span>
+              <span class="field__label" data-i18n="label_password">
+                Wachtwoord
+              </span>
               <input
                 id="adminPassword"
                 class="field__input"
@@ -128,7 +181,12 @@
                 autocomplete="current-password"
               />
             </label>
-            <button id="adminLogin" class="btn btn--primary" type="button">
+            <button
+              id="adminLogin"
+              class="btn btn--primary"
+              type="button"
+              data-i18n="admin_open_btn"
+            >
               Open admin paneel
             </button>
             <div
@@ -141,7 +199,9 @@
 
           <div id="entryFields" class="entryFields">
             <label class="field">
-              <span class="field__label">Gemeente/stad (optioneel)</span>
+              <span class="field__label" data-i18n="label_city">
+                Gemeente/stad (optioneel)
+              </span>
               <input
                 id="city"
                 name="city"
@@ -149,13 +209,21 @@
                 type="text"
                 autocomplete="address-level2"
                 placeholder="bv. Oostende"
+                data-i18n-attr="placeholder:city_placeholder"
                 maxlength="120"
               />
-              <span class="field__hint">Alleen voor statistieken.</span>
+              <span class="field__hint" data-i18n="label_city_hint">
+                Alleen voor statistieken.
+              </span>
             </label>
 
             <div class="continueRow">
-              <button id="continueBtn" class="btn btn--ghost" type="button">
+              <button
+                id="continueBtn"
+                class="btn btn--ghost"
+                type="button"
+                data-i18n="continue_btn"
+              >
                 Verder
               </button>
               <div id="continueMsg" class="formMsg" role="status" aria-live="polite"></div>
@@ -163,9 +231,9 @@
 
             <div id="step2" class="step2" aria-hidden="true">
               <label class="field">
-                <span class="field__label"
-                  >Totaal van de rekensom van alle vlagjes</span
-                >
+                <span class="field__label" data-i18n="label_answer">
+                  Totaal van de rekensom van alle vlagjes
+                </span>
                 <input
                   id="answer"
                   name="answer"
@@ -181,7 +249,12 @@
                 />
               </label>
 
-              <button id="submitBtn" class="btn btn--primary" type="submit">
+              <button
+                id="submitBtn"
+                class="btn btn--primary"
+                type="submit"
+                data-i18n="submit_btn"
+              >
                 Versturen
               </button>
               <div id="formMsg" class="formMsg" role="status" aria-live="polite"></div>
@@ -190,35 +263,48 @@
         </form>
       </section>
 
-      <section id="adminPanel" class="card admin" hidden aria-label="Admin paneel">
+      <section
+        id="adminPanel"
+        class="card admin"
+        hidden
+        aria-label="Admin paneel"
+        data-i18n-attr="aria-label:admin_panel_aria"
+      >
         <div class="card__titleRow">
-          <h2 class="card__title">Admin</h2>
-          <button id="adminRefresh" class="btn btn--ghost" type="button">
+          <h2 class="card__title" data-i18n="admin_title">Admin</h2>
+          <button
+            id="adminRefresh"
+            class="btn btn--ghost"
+            type="button"
+            data-i18n="admin_refresh_btn"
+          >
             Ververs
           </button>
         </div>
 
         <div class="stats">
           <div class="stat">
-            <div class="stat__k">Deelnemers</div>
+            <div class="stat__k" data-i18n="stat_total">Deelnemers</div>
             <div id="statTotal" class="stat__v">-</div>
           </div>
           <div class="stat">
-            <div class="stat__k">Juist</div>
+            <div class="stat__k" data-i18n="stat_correct">Juist</div>
             <div id="statCorrect" class="stat__v">-</div>
           </div>
           <div class="stat">
-            <div class="stat__k">Fout</div>
+            <div class="stat__k" data-i18n="stat_wrong">Fout</div>
             <div id="statWrong" class="stat__v">-</div>
           </div>
           <div class="stat">
-            <div class="stat__k">Goud</div>
+            <div class="stat__k" data-i18n="stat_gold">Goud</div>
             <div id="statGold" class="stat__v">-</div>
           </div>
         </div>
 
         <div class="goldCtrl">
-          <div class="goldCtrl__label">Volgende gouden prijs over</div>
+          <div class="goldCtrl__label" data-i18n="gold_label">
+            Volgende gouden prijs over
+          </div>
           <div class="goldCtrl__row">
             <button id="goldMinus" class="btn btn--ghost" type="button">-</button>
             <div class="goldCtrl__num">
@@ -235,15 +321,20 @@
             </div>
             <button id="goldPlus" class="btn btn--ghost" type="button">+</button>
           </div>
-          <div class="goldCtrl__unit">deelnemers</div>
-          <button id="goldApply" class="btn btn--primary" type="button">
+          <div class="goldCtrl__unit" data-i18n="gold_unit">deelnemers</div>
+          <button
+            id="goldApply"
+            class="btn btn--primary"
+            type="button"
+            data-i18n="gold_apply_btn"
+          >
             Toepassen
           </button>
           <div id="adminMsg" class="formMsg" role="status" aria-live="polite"></div>
         </div>
 
         <div class="winners">
-          <h3 class="winners__h">Gouden winnaars</h3>
+          <h3 class="winners__h" data-i18n="winners_title">Gouden winnaars</h3>
           <div id="winnersList" class="winners__list"></div>
         </div>
       </section>
@@ -251,27 +342,32 @@
 
     <footer class="footer">
       <details class="legal">
-        <summary>Privacy & voorwaarden</summary>
+        <summary data-i18n="legal_summary">Privacy & voorwaarden</summary>
         <div class="legal__body">
-          <p>
+          <p data-i18n="legal_p1">
             We verzamelen je e-mailadres om deelname te registreren en dubbele
             deelnames te vermijden. Gemeente/stad is optioneel en enkel voor
             statistieken.
           </p>
-          <p>
+          <p data-i18n="legal_p2">
             Nieuwsbrief: alleen als je het vakje aanvinkt. Je kan je altijd
             uitschrijven.
           </p>
         </div>
       </details>
-      <div class="footer__note">© Playmobil aan Zee</div>
+      <div class="footer__note" data-i18n="footer_note">© Playmobil aan Zee</div>
     </footer>
 
     <div id="overlay" class="overlay" hidden aria-live="polite">
       <div id="overlayCard" class="overlay__card" role="dialog" aria-modal="true">
         <div id="overlayTitle" class="overlay__title"></div>
         <div id="overlayText" class="overlay__text"></div>
-        <button id="overlayClose" class="btn btn--primary" type="button">
+        <button
+          id="overlayClose"
+          class="btn btn--primary"
+          type="button"
+          data-i18n="overlay_close"
+        >
           Sluiten
         </button>
       </div>
@@ -281,13 +377,18 @@
     <div id="goldScreen" class="goldScreen" hidden>
       <div class="goldScreen__spotlight" aria-hidden="true"></div>
       <div class="goldScreen__wrap">
-        <div class="trophy" role="img" aria-label="Trophy">
+        <div
+          class="trophy"
+          role="img"
+          aria-label="Trophy"
+          data-i18n-attr="aria-label:trophy_aria"
+        >
           <div class="trophy__cup"></div>
           <div class="trophy__stem"></div>
           <div class="trophy__base"></div>
         </div>
         <div class="goldScreen__title" id="goldTitle"></div>
-        <div class="goldScreen__text">
+        <div class="goldScreen__text" data-i18n="gold_screen_text">
           Je scherm blijft zo staan. Laat dit zien aan onze crew.
         </div>
       </div>

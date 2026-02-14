@@ -22,12 +22,21 @@ function prefersReducedMotion() {
   );
 }
 
-function setMsg(el, msg, kind) {
+function setMsg(el, msg, kind, keepKey = false) {
   if (!el) return;
+  if (!keepKey && el.dataset) {
+    delete el.dataset.msgKey;
+  }
   el.textContent = msg || "";
   el.classList.remove("formMsg--ok", "formMsg--err");
   if (kind === "ok") el.classList.add("formMsg--ok");
   if (kind === "err") el.classList.add("formMsg--err");
+}
+
+function setMsgKey(el, key, kind) {
+  if (!el) return;
+  if (el.dataset) el.dataset.msgKey = key;
+  setMsg(el, t(key), kind, true);
 }
 
 function show(el) {
@@ -148,7 +157,391 @@ function createConfetti(canvas, { loop = false } = {}) {
   };
 }
 
+const I18N = {
+  nl: {
+    page_title: "Playmobil aan Zee | Wedstrijd",
+    logo_aria: "Smiley logo",
+    intro_title: "Playmobil aan Zee",
+    intro_subtitle: "Wedstrijd",
+    hero_brand: "Playmobil aan Zee Wedstrijd",
+    hero_title: "Welkom!",
+    hero_text:
+      "Tel alle verborgen vlaggetjes in elke diorama op de beurs, tel ze samen, en vul het totaal hieronder in!",
+    form_aria: "Wedstrijdformulier",
+    form_title: "Doe mee",
+    label_email: "E-mailadres",
+    email_placeholder: "jij@voorbeeld.be",
+    label_newsletter: "Ja, je mag mij mailen voor de nieuwsbrief (optioneel)",
+    admin_gate_note: "Admin modus. Vul het wachtwoord in.",
+    label_password: "Wachtwoord",
+    admin_open_btn: "Open admin paneel",
+    label_city: "Gemeente/stad (optioneel)",
+    city_placeholder: "bv. Oostende",
+    label_city_hint: "Alleen voor statistieken.",
+    continue_btn: "Verder",
+    label_answer: "Totaal van de rekensom van alle vlagjes",
+    submit_btn: "Versturen",
+    admin_panel_aria: "Admin paneel",
+    admin_title: "Admin",
+    admin_refresh_btn: "Ververs",
+    stat_total: "Deelnemers",
+    stat_correct: "Juist",
+    stat_wrong: "Fout",
+    stat_gold: "Goud",
+    gold_label: "Volgende gouden prijs over",
+    gold_unit: "deelnemers",
+    gold_apply_btn: "Toepassen",
+    winners_title: "Gouden winnaars",
+    legal_summary: "Privacy & voorwaarden",
+    legal_p1:
+      "We verzamelen je e-mailadres om deelname te registreren en dubbele deelnames te vermijden. Gemeente/stad is optioneel en enkel voor statistieken.",
+    legal_p2:
+      "Nieuwsbrief: alleen als je het vakje aanvinkt. Je kan je altijd uitschrijven.",
+    footer_note: "© Playmobil aan Zee",
+    overlay_close: "Sluiten",
+    gold_screen_text: "Je scherm blijft zo staan. Laat dit zien aan onze crew.",
+    lang_switch_aria: "Taalkeuze",
+    trophy_aria: "Trofee",
+    gold_winner_title: "Je hebt de gouden prijs gewonnen!",
+    msg_loading: "Laden...",
+    msg_no_connection: "Geen verbinding met server.",
+    msg_admin_login_failed: "Admin login mislukt.",
+    msg_no_winners: "Nog geen gouden winnaars.",
+    msg_ok: "OK.",
+    msg_invalid_email: "Vul eerst een geldig e-mailadres in.",
+    msg_saving: "Opslaan...",
+    msg_already_played:
+      "U hebt al deelgenomen aan deze wedstrijd; bedankt voor uw deelname.",
+    msg_try_again: "Er ging iets mis. Probeer opnieuw.",
+    msg_fill_total: "Top! Vul nu je totaal in.",
+    msg_password_missing: "Wachtwoord ontbreekt.",
+    overlay_admin_title: "Admin",
+    overlay_admin_loading: "Admin paneel wordt geladen...",
+    msg_applying: "Toepassen...",
+    msg_update_failed: "Updaten mislukt.",
+    msg_admin_continue: "Klik op 'Verder' om admin login te openen.",
+    msg_continue_first: "Klik eerst op 'Verder'.",
+    msg_sending: "Versturen...",
+    msg_submitted: "Ingediend. Succes!",
+    overlay_correct_title: "🎉JOEPIE!🎉Helemaal juist!",
+    overlay_correct_text:
+      "Proficiat! Je bent gewonnen! Toon dit scherm aan onze crew.",
+    overlay_wrong_title: ":( Sorry, dat is niet correct.",
+    overlay_wrong_text:
+      "Jammer! Dit antwoord klopt niet. Bedankt voor je deelname.",
+    msg_wrong_short: "Sorry, dat is niet correct.",
+  },
+  en: {
+    page_title: "Playmobil aan Zee | Contest",
+    logo_aria: "Smiley logo",
+    intro_title: "Playmobil aan Zee",
+    intro_subtitle: "Contest",
+    hero_brand: "Playmobil aan Zee Contest",
+    hero_title: "Welcome!",
+    hero_text:
+      "Count all hidden flags in each diorama at the fair, add them up, and enter the total below!",
+    form_aria: "Contest form",
+    form_title: "Join",
+    label_email: "Email address",
+    email_placeholder: "you@example.com",
+    label_newsletter: "Yes, you may email me about the newsletter (optional)",
+    admin_gate_note: "Admin mode. Enter the password.",
+    label_password: "Password",
+    admin_open_btn: "Open admin panel",
+    label_city: "City/municipality (optional)",
+    city_placeholder: "e.g. Ostend",
+    label_city_hint: "Only for statistics.",
+    continue_btn: "Continue",
+    label_answer: "Total of the flags count",
+    submit_btn: "Send",
+    admin_panel_aria: "Admin panel",
+    admin_title: "Admin",
+    admin_refresh_btn: "Refresh",
+    stat_total: "Participants",
+    stat_correct: "Correct",
+    stat_wrong: "Wrong",
+    stat_gold: "Gold",
+    gold_label: "Next gold prize in",
+    gold_unit: "participants",
+    gold_apply_btn: "Apply",
+    winners_title: "Gold winners",
+    legal_summary: "Privacy & terms",
+    legal_p1:
+      "We collect your email to register participation and avoid duplicates. City/municipality is optional and for statistics only.",
+    legal_p2:
+      "Newsletter: only if you tick the box. You can unsubscribe at any time.",
+    footer_note: "© Playmobil aan Zee",
+    overlay_close: "Close",
+    gold_screen_text: "This screen stays on. Show it to our crew.",
+    lang_switch_aria: "Language switcher",
+    trophy_aria: "Trophy",
+    gold_winner_title: "You won the gold prize!",
+    msg_loading: "Loading...",
+    msg_no_connection: "No connection to server.",
+    msg_admin_login_failed: "Admin login failed.",
+    msg_no_winners: "No gold winners yet.",
+    msg_ok: "OK.",
+    msg_invalid_email: "Please enter a valid email address first.",
+    msg_saving: "Saving...",
+    msg_already_played:
+      "You have already participated in this contest; thanks for joining.",
+    msg_try_again: "Something went wrong. Please try again.",
+    msg_fill_total: "Great! Now enter your total.",
+    msg_password_missing: "Password missing.",
+    overlay_admin_title: "Admin",
+    overlay_admin_loading: "Loading admin panel...",
+    msg_applying: "Applying...",
+    msg_update_failed: "Update failed.",
+    msg_admin_continue: "Click 'Continue' to open admin login.",
+    msg_continue_first: "Click 'Continue' first.",
+    msg_sending: "Sending...",
+    msg_submitted: "Submitted. Good luck!",
+    overlay_correct_title: "🎉YAY!🎉Correct!",
+    overlay_correct_text: "Congrats! You won! Show this screen to our crew.",
+    overlay_wrong_title: ":( Sorry, that's not correct.",
+    overlay_wrong_text: "Too bad! That answer is not correct. Thanks for joining.",
+    msg_wrong_short: "Sorry, that's not correct.",
+  },
+  de: {
+    page_title: "Playmobil aan Zee | Wettbewerb",
+    logo_aria: "Smiley-Logo",
+    intro_title: "Playmobil aan Zee",
+    intro_subtitle: "Wettbewerb",
+    hero_brand: "Playmobil aan Zee Wettbewerb",
+    hero_title: "Willkommen!",
+    hero_text:
+      "Zähle alle versteckten Fähnchen in jedem Diorama auf der Messe, addiere sie und trage die Gesamtzahl unten ein!",
+    form_aria: "Wettbewerbsformular",
+    form_title: "Mitmachen",
+    label_email: "E-Mail-Adresse",
+    email_placeholder: "du@beispiel.de",
+    label_newsletter: "Ja, ihr dürft mir zum Newsletter mailen (optional)",
+    admin_gate_note: "Admin-Modus. Passwort eingeben.",
+    label_password: "Passwort",
+    admin_open_btn: "Admin-Bereich öffnen",
+    label_city: "Stadt/Gemeinde (optional)",
+    city_placeholder: "z. B. Ostende",
+    label_city_hint: "Nur für Statistiken.",
+    continue_btn: "Weiter",
+    label_answer: "Gesamtsumme der Fähnchen",
+    submit_btn: "Senden",
+    admin_panel_aria: "Admin-Bereich",
+    admin_title: "Admin",
+    admin_refresh_btn: "Aktualisieren",
+    stat_total: "Teilnehmer",
+    stat_correct: "Richtig",
+    stat_wrong: "Falsch",
+    stat_gold: "Gold",
+    gold_label: "Nächster Goldpreis in",
+    gold_unit: "Teilnehmern",
+    gold_apply_btn: "Anwenden",
+    winners_title: "Gold-Gewinner",
+    legal_summary: "Datenschutz & Bedingungen",
+    legal_p1:
+      "Wir sammeln deine E-Mail-Adresse, um die Teilnahme zu registrieren und doppelte Teilnahmen zu vermeiden. Stadt/Gemeinde ist optional und nur für Statistiken.",
+    legal_p2:
+      "Newsletter: nur wenn du das Kästchen ankreuzt. Du kannst dich jederzeit abmelden.",
+    footer_note: "© Playmobil aan Zee",
+    overlay_close: "Schließen",
+    gold_screen_text: "Dieser Bildschirm bleibt stehen. Zeig ihn unserem Team.",
+    lang_switch_aria: "Sprachauswahl",
+    trophy_aria: "Pokal",
+    gold_winner_title: "Du hast den Goldpreis gewonnen!",
+    msg_loading: "Laden...",
+    msg_no_connection: "Keine Verbindung zum Server.",
+    msg_admin_login_failed: "Admin-Login fehlgeschlagen.",
+    msg_no_winners: "Noch keine Gold-Gewinner.",
+    msg_ok: "OK.",
+    msg_invalid_email: "Bitte zuerst eine gültige E-Mail-Adresse eingeben.",
+    msg_saving: "Speichern...",
+    msg_already_played:
+      "Du hast bereits an diesem Wettbewerb teilgenommen; danke fürs Mitmachen.",
+    msg_try_again: "Etwas ist schiefgelaufen. Bitte erneut versuchen.",
+    msg_fill_total: "Super! Gib jetzt deine Summe ein.",
+    msg_password_missing: "Passwort fehlt.",
+    overlay_admin_title: "Admin",
+    overlay_admin_loading: "Admin-Bereich wird geladen...",
+    msg_applying: "Wird angewendet...",
+    msg_update_failed: "Aktualisierung fehlgeschlagen.",
+    msg_admin_continue: "Klicke auf 'Weiter', um den Admin-Login zu öffnen.",
+    msg_continue_first: "Bitte zuerst auf 'Weiter' klicken.",
+    msg_sending: "Senden...",
+    msg_submitted: "Eingereicht. Viel Erfolg!",
+    overlay_correct_title: "🎉Juhu!🎉Alles richtig!",
+    overlay_correct_text:
+      "Glückwunsch! Du hast gewonnen! Zeig diesen Bildschirm unserem Team.",
+    overlay_wrong_title: ":( Sorry, das ist nicht korrekt.",
+    overlay_wrong_text:
+      "Schade! Diese Antwort ist nicht korrekt. Danke fürs Mitmachen.",
+    msg_wrong_short: "Sorry, das ist nicht korrekt.",
+  },
+  fr: {
+    page_title: "Playmobil aan Zee | Concours",
+    logo_aria: "Logo sourire",
+    intro_title: "Playmobil aan Zee",
+    intro_subtitle: "Concours",
+    hero_brand: "Concours Playmobil aan Zee",
+    hero_title: "Bienvenue !",
+    hero_text:
+      "Compte tous les drapeaux cachés dans chaque diorama au salon, additionne-les et saisis le total ci-dessous !",
+    form_aria: "Formulaire du concours",
+    form_title: "Participer",
+    label_email: "Adresse e-mail",
+    email_placeholder: "toi@exemple.fr",
+    label_newsletter: "Oui, vous pouvez m'envoyer la newsletter (optionnel)",
+    admin_gate_note: "Mode admin. Entrez le mot de passe.",
+    label_password: "Mot de passe",
+    admin_open_btn: "Ouvrir le panneau admin",
+    label_city: "Ville/commune (optionnel)",
+    city_placeholder: "ex. Ostende",
+    label_city_hint: "Uniquement pour les statistiques.",
+    continue_btn: "Continuer",
+    label_answer: "Total du comptage des drapeaux",
+    submit_btn: "Envoyer",
+    admin_panel_aria: "Panneau admin",
+    admin_title: "Admin",
+    admin_refresh_btn: "Rafraichir",
+    stat_total: "Participants",
+    stat_correct: "Correct",
+    stat_wrong: "Faux",
+    stat_gold: "Or",
+    gold_label: "Prochain prix or dans",
+    gold_unit: "participants",
+    gold_apply_btn: "Appliquer",
+    winners_title: "Gagnants or",
+    legal_summary: "Confidentialite & conditions",
+    legal_p1:
+      "Nous collectons votre e-mail pour enregistrer la participation et eviter les doublons. Ville/commune est optionnel et uniquement pour les statistiques.",
+    legal_p2:
+      "Newsletter : seulement si vous cochez la case. Vous pouvez vous desinscrire a tout moment.",
+    footer_note: "© Playmobil aan Zee",
+    overlay_close: "Fermer",
+    gold_screen_text:
+      "Cet ecran reste affiche. Montrez-le a notre equipe.",
+    lang_switch_aria: "Choix de langue",
+    trophy_aria: "Trophee",
+    gold_winner_title: "Vous avez gagne le prix or !",
+    msg_loading: "Chargement...",
+    msg_no_connection: "Pas de connexion au serveur.",
+    msg_admin_login_failed: "Connexion admin echouee.",
+    msg_no_winners: "Pas encore de gagnants or.",
+    msg_ok: "OK.",
+    msg_invalid_email: "Veuillez d'abord saisir une adresse e-mail valide.",
+    msg_saving: "Enregistrement...",
+    msg_already_played:
+      "Vous avez deja participe a ce concours ; merci pour votre participation.",
+    msg_try_again: "Une erreur s'est produite. Veuillez reessayer.",
+    msg_fill_total: "Super ! Saisissez maintenant votre total.",
+    msg_password_missing: "Mot de passe manquant.",
+    overlay_admin_title: "Admin",
+    overlay_admin_loading: "Chargement du panneau admin...",
+    msg_applying: "Application...",
+    msg_update_failed: "Mise a jour echouee.",
+    msg_admin_continue: "Cliquez sur 'Continuer' pour ouvrir l'admin.",
+    msg_continue_first: "Cliquez d'abord sur 'Continuer'.",
+    msg_sending: "Envoi...",
+    msg_submitted: "Envoye. Bonne chance !",
+    overlay_correct_title: "🎉Bravo !🎉Correct !",
+    overlay_correct_text:
+      "Felicitations ! Vous avez gagne ! Montrez cet ecran a notre equipe.",
+    overlay_wrong_title: ":( Desole, ce n'est pas correct.",
+    overlay_wrong_text:
+      "Dommage ! Cette reponse n'est pas correcte. Merci pour votre participation.",
+    msg_wrong_short: "Desole, ce n'est pas correct.",
+  },
+};
+
+const SUPPORTED_LANGS = ["nl", "en", "de", "fr"];
+let currentLang = "nl";
+
+function safeLocalStorageGet(key) {
+  try {
+    return window.localStorage.getItem(key);
+  } catch (err) {
+    return null;
+  }
+}
+
+function safeLocalStorageSet(key, value) {
+  try {
+    window.localStorage.setItem(key, value);
+  } catch (err) {
+    return;
+  }
+}
+
+function getLangFromUrl() {
+  const params = new URLSearchParams(window.location.search || "");
+  const lang = String(params.get("lang") || "").toLowerCase();
+  return SUPPORTED_LANGS.includes(lang) ? lang : null;
+}
+
+function t(key) {
+  const dict = I18N[currentLang] || I18N.nl;
+  return dict[key] || I18N.nl[key] || key;
+}
+
+function applyTranslations() {
+  document.title = t("page_title");
+  document.documentElement.lang = currentLang;
+
+  document.querySelectorAll("[data-i18n]").forEach((el) => {
+    const key = el.dataset.i18n;
+    if (!key) return;
+    el.textContent = t(key);
+  });
+
+  document.querySelectorAll("[data-i18n-attr]").forEach((el) => {
+    const raw = el.dataset.i18nAttr || "";
+    const parts = raw
+      .split(",")
+      .map((p) => p.trim())
+      .filter(Boolean);
+    for (const part of parts) {
+      const [attr, key] = part.split(":").map((s) => s.trim());
+      if (!attr || !key) continue;
+      el.setAttribute(attr, t(key));
+    }
+  });
+
+  document.querySelectorAll("[data-msg-key]").forEach((el) => {
+    const key = el.dataset.msgKey;
+    if (!key) return;
+    el.textContent = t(key);
+  });
+}
+
+function setLang(lang, { updateUrl = true, persist = true } = {}) {
+  const normalized = String(lang || "").toLowerCase();
+  const next = SUPPORTED_LANGS.includes(normalized) ? normalized : "nl";
+  currentLang = next;
+  applyTranslations();
+  if (persist) safeLocalStorageSet("lang", next);
+  if (updateUrl) {
+    const url = new URL(window.location.href);
+    url.searchParams.set("lang", next);
+    window.history.replaceState({}, "", url);
+  }
+
+  document.querySelectorAll(".langSwitch__btn").forEach((btn) => {
+    const isActive = btn.dataset.lang === next;
+    btn.classList.toggle("langSwitch__btn--active", isActive);
+    btn.setAttribute("aria-pressed", isActive ? "true" : "false");
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
+  const urlLang = getLangFromUrl();
+  const storedLang = safeLocalStorageGet("lang");
+  setLang(urlLang || storedLang || "nl", { updateUrl: !!urlLang });
+
+  document.querySelectorAll(".langSwitch__btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const lang = String(btn.dataset.lang || "").toLowerCase();
+      setLang(lang, { updateUrl: true, persist: true });
+    });
+  });
+
   const intro = $("intro");
   const emailEl = $("email");
   const continueBtn = $("continueBtn");
@@ -291,7 +684,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function enterGoldScreen() {
-    goldTitle.textContent = "Je hebt de gouden prijs gewonnen!";
+    goldTitle.textContent = t("gold_winner_title");
     show(goldScreen);
     if (!prefersReducedMotion()) {
       if (confettiGoldRun) confettiGoldRun.stop();
@@ -335,17 +728,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function adminFetchStats() {
     setBusy(true);
-    setMsg(adminMsg, "Laden...", "");
+    setMsgKey(adminMsg, "msg_loading", "");
     setMsg(adminGateMsg, "", "");
     const res = await jsonPost("api/admin_stats.php", { password: adminPw });
     setBusy(false);
 
     if (!res.ok || !res.data || !res.data.ok) {
-      const msg =
-        res.status === 0
-          ? "Geen verbinding met server."
-          : (res.data && res.data.message) || "Admin login mislukt.";
-      setMsg(adminGateMsg, msg, "err");
+      if (res.status === 0) {
+        setMsgKey(adminGateMsg, "msg_no_connection", "err");
+      } else if (res.data && res.data.message) {
+        setMsg(adminGateMsg, res.data.message, "err");
+      } else {
+        setMsgKey(adminGateMsg, "msg_admin_login_failed", "err");
+      }
       return false;
     }
 
@@ -363,8 +758,14 @@ document.addEventListener("DOMContentLoaded", () => {
     winnersList.textContent = "";
     const winners = res.data.winners || [];
     if (winners.length === 0) {
-      winnersList.textContent = "Nog geen gouden winnaars.";
+      if (winnersList.dataset) {
+        winnersList.dataset.msgKey = "msg_no_winners";
+      }
+      winnersList.textContent = t("msg_no_winners");
     } else {
+      if (winnersList.dataset) {
+        delete winnersList.dataset.msgKey;
+      }
       for (const w of winners) {
         const row = document.createElement("div");
         row.className = "winner";
@@ -379,7 +780,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    setMsg(adminMsg, "OK.", "ok");
+    setMsgKey(adminMsg, "msg_ok", "ok");
     setMsg(adminGateMsg, "", "");
     return true;
   }
@@ -430,7 +831,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       adminGateActive = false;
       if (!emailEl.checkValidity()) {
-        setMsg(continueMsg, "Vul eerst een geldig e-mailadres in.", "err");
+        setMsgKey(continueMsg, "msg_invalid_email", "err");
         emailEl.reportValidity();
         return;
       }
@@ -439,7 +840,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const city = String($("city").value || "").trim();
 
       setBusy(true);
-      setMsg(continueMsg, "Opslaan...", "");
+      setMsgKey(continueMsg, "msg_saving", "");
       const res = await jsonPost("api/pre_register.php", {
         email,
         newsletter_opt_in: newsletter,
@@ -452,21 +853,29 @@ document.addEventListener("DOMContentLoaded", () => {
         const code = data.code || "";
         const msg =
           res.status === 0
-            ? "Geen verbinding met server."
+            ? t("msg_no_connection")
             : data.message ||
               (code === "already_played"
-                ? "U hebt al deelgenomen aan deze wedstrijd; bedankt voor uw deelname."
-                : "Er ging iets mis. Probeer opnieuw.");
-        setMsg(continueMsg, msg, "err");
+                ? t("msg_already_played")
+                : t("msg_try_again"));
+        if (res.status === 0) {
+          setMsgKey(continueMsg, "msg_no_connection", "err");
+        } else if (code === "already_played") {
+          setMsgKey(continueMsg, "msg_already_played", "err");
+        } else if (data.message) {
+          setMsg(continueMsg, msg, "err");
+        } else {
+          setMsgKey(continueMsg, "msg_try_again", "err");
+        }
         if (code === "already_played") {
-          setMsg(formMsg, msg, "err");
+          setMsgKey(formMsg, "msg_already_played", "err");
         }
         return;
       }
 
       entryUnlocked = true;
       updateStep2();
-      setMsg(continueMsg, "Top! Vul nu je totaal in.", "ok");
+      setMsgKey(continueMsg, "msg_fill_total", "ok");
       if (!answerEl.disabled) {
         answerEl.focus();
       }
@@ -484,11 +893,13 @@ document.addEventListener("DOMContentLoaded", () => {
     adminLogin.addEventListener("click", async () => {
       adminPw = String(adminPassword.value || "");
       if (adminPw.length === 0) {
-        setMsg(adminGateMsg, "Wachtwoord ontbreekt.", "err");
+        setMsgKey(adminGateMsg, "msg_password_missing", "err");
         return;
       }
 
-      showOverlay("Admin", "Admin paneel wordt geladen...", { confettiMode: "none" });
+      showOverlay(t("overlay_admin_title"), t("overlay_admin_loading"), {
+        confettiMode: "none",
+      });
       const ok = await adminFetchStats();
       hideOverlay();
       if (ok) {
@@ -544,23 +955,23 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       if (remainingLocal == null) return;
       setBusy(true);
-      setMsg(adminMsg, "Toepassen...", "");
+      setMsgKey(adminMsg, "msg_applying", "");
       const res = await jsonPost("api/admin_update.php", {
         password: adminPw,
         remaining_to_gold: Number(remainingLocal),
       });
       setBusy(false);
       if (!res.ok || !res.data || !res.data.ok) {
-        setMsg(
-          adminMsg,
-          (res.data && res.data.message) || "Updaten mislukt.",
-          "err"
-        );
+        if (res.data && res.data.message) {
+          setMsg(adminMsg, res.data.message, "err");
+        } else {
+          setMsgKey(adminMsg, "msg_update_failed", "err");
+        }
         return;
       }
       remainingLocal = res.data.remaining_to_gold;
       updateRemainingUI();
-      setMsg(adminMsg, "OK.", "ok");
+      setMsgKey(adminMsg, "msg_ok", "ok");
     });
   }
 
@@ -572,7 +983,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const email = String(emailEl.value || "").trim();
       const isAdmin = email.toLowerCase() === "admin";
       if (isAdmin) {
-        setMsg(formMsg, "Klik op 'Verder' om admin login te openen.", "err");
+        setMsgKey(formMsg, "msg_admin_continue", "err");
         return;
       }
 
@@ -582,7 +993,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
       if (!entryUnlocked) {
-        setMsg(continueMsg, "Klik eerst op 'Verder'.", "err");
+        setMsgKey(continueMsg, "msg_continue_first", "err");
         return;
       }
       if (answerEl.disabled || !answerEl.checkValidity()) {
@@ -595,7 +1006,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const city = String($("city").value || "").trim();
 
       setBusy(true);
-      setMsg(formMsg, "Versturen...", "");
+      setMsgKey(formMsg, "msg_sending", "");
 
       const res = await jsonPost("api/submit.php", {
         email,
@@ -611,12 +1022,20 @@ document.addEventListener("DOMContentLoaded", () => {
         const code = data.code || "";
         const msg =
           res.status === 0
-            ? "Geen verbinding met server."
+            ? t("msg_no_connection")
             : data.message ||
               (code === "already_played"
-                ? "U hebt al deelgenomen aan deze wedstrijd; bedankt voor uw deelname."
-                : "Er ging iets mis. Probeer opnieuw.");
-        setMsg(formMsg, msg, "err");
+                ? t("msg_already_played")
+                : t("msg_try_again"));
+        if (res.status === 0) {
+          setMsgKey(formMsg, "msg_no_connection", "err");
+        } else if (code === "already_played") {
+          setMsgKey(formMsg, "msg_already_played", "err");
+        } else if (data.message) {
+          setMsg(formMsg, msg, "err");
+        } else {
+          setMsgKey(formMsg, "msg_try_again", "err");
+        }
         return;
       }
 
@@ -637,18 +1056,18 @@ document.addEventListener("DOMContentLoaded", () => {
         $("city").disabled = true;
         if (submitBtn) submitBtn.disabled = true;
         showOverlay(
-          "🎉JOEPIE!🎉Helemaal juist!",
-          "Proficiat! Je bent gewonnen! Toon dit scherm aan onze crew.",
+          t("overlay_correct_title"),
+          t("overlay_correct_text"),
           { confettiMode: "loop", tone: "winner", persistent: true }
         );
-        setMsg(formMsg, "Ingediend. Succes!", "ok");
+        setMsgKey(formMsg, "msg_submitted", "ok");
       } else {
         showOverlay(
-          ":( Sorry, dat is niet correct.",
-          "Jammer! Dit antwoord klopt niet. Bedankt voor je deelname.",
+          t("overlay_wrong_title"),
+          t("overlay_wrong_text"),
           { confettiMode: "none", tone: "error", onClose: resetForNextPlayer }
         );
-        setMsg(formMsg, "Sorry, dat is niet correct.", "err");
+        setMsgKey(formMsg, "msg_wrong_short", "err");
       }
     });
   }
